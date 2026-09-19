@@ -161,12 +161,18 @@ At minimum:
 - CONT-4B — Notion mirror/index — PASS
 - CONT-4C — ChatGPT Project continuity pointer/update — PASS
 - DEV-2 — Create local Development folder — PASS (`/Users/jimmarkunas/Development`)
-- DEV-3 — Clone repository — NEXT
-- DEV-4 — Sync/switch to `feature/3b1-clean-plate-engine` — pending
-- DEV-5 — Create Python `.venv` — pending
+- DEV-3 — Clone repository — PASS
+- WS-1 / WS-2 — Repository isolation + repo-local `AGENTS.md` guardrails — PASS
+- WS-4 — Repository-root / branch / clean-tree preflight — PASS
+- DEV-4 — Sync/switch local and remote `feature/3b1-clean-plate-engine` to current protected baseline — PASS
+- DEV-5 / WS-3 — Create repository-local Python `.venv` — NEXT
 - DEV-6 — Configure VS Code + Codex — pending
 - DEV-7 — Add immutable DIRECTV master locally — pending
 - DEV-8 — Validate local environment — pending
+
+## Workspace isolation rule
+
+The desktop/VS Code environment may contain multiple sibling repositories, but this project must treat only `/Users/jimmarkunas/Development/figma-layer-decomposer` as its writable project root. `~/Development` itself must not become a Git repository or shared project root. Repo-local `AGENTS.md` defines mandatory agent preflight and cross-repository boundaries.
 
 ## Pipeline roadmap
 
@@ -187,7 +193,7 @@ At minimum:
 
 ## Current next step
 
-`DEV-3 — Clone the repository into /Users/jimmarkunas/Development.`
+`DEV-5 / WS-3 — Create the repository-local Python .venv using Python 3.12.`
 
 ## Continuity protocol
 
@@ -196,7 +202,7 @@ At the start of any new ChatGPT or Codex session:
 1. Read `docs/PROJECT_CANON.md` from `main`.
 2. Read `README.md`.
 3. Read `docs/CLEAN_PLATE_CONTRACT.md` when working on M3 clean-plate implementation.
-4. Confirm current branch / issue / roadmap before editing.
+4. Confirm current Git root, branch, working-tree status, issue, and roadmap before editing.
 5. Perform one bounded operation, validate it, then stop.
 
 Update this file whenever the accepted roadmap state, next step, canonical coordinates, or source-of-truth locations materially change.
