@@ -157,11 +157,11 @@ At minimum:
 - CONT-1 — Create ChatGPT Project — PASS
 - CONT-2 — Move active conversation into project — PASS
 - CONT-3 — Add ChatGPT Project instructions — PASS
-- CONT-4A — Canonical GitHub continuity file — COMPLETE when this file is merged/present on `main`
-- CONT-4B — Notion mirror/index — pending
-- CONT-4C — ChatGPT Project continuity pointer/update — pending
-- DEV-2 — Create local Development folder — pending
-- DEV-3 — Clone repository — pending
+- CONT-4A — Canonical GitHub continuity file — PASS
+- CONT-4B — Notion mirror/index — PASS
+- CONT-4C — ChatGPT Project continuity pointer/update — PASS
+- DEV-2 — Create local Development folder — PASS (`/Users/jimmarkunas/Development`)
+- DEV-3 — Clone repository — NEXT
 - DEV-4 — Sync/switch to `feature/3b1-clean-plate-engine` — pending
 - DEV-5 — Create Python `.venv` — pending
 - DEV-6 — Configure VS Code + Codex — pending
@@ -187,11 +187,7 @@ At minimum:
 
 ## Current next step
 
-`CONT-4B — Create a Notion mirror/index that points back to this GitHub canon.`
-
-After continuity setup is complete:
-
-`DEV-2 — Create the local Development folder.`
+`DEV-3 — Clone the repository into /Users/jimmarkunas/Development.`
 
 ## Continuity protocol
 
