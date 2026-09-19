@@ -42,6 +42,8 @@ Turn approved flat mock-up PNGs into genuinely editable layered Figma compositio
 - Default branch: `main`
 - Current implementation branch: `feature/3b1-clean-plate-engine`
 - Current implementation issue: `#1 — 3B.1 — Implement deterministic clean-plate pipeline`
+- Local repository path: `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer`
+- Product status: standalone product inside the shared Jim development workspace.
 
 ## Figma
 
@@ -165,14 +167,14 @@ At minimum:
 - WS-1 / WS-2 — Repository isolation + repo-local `AGENTS.md` guardrails — PASS
 - WS-4 — Repository-root / branch / clean-tree preflight — PASS
 - DEV-4 — Sync/switch local and remote `feature/3b1-clean-plate-engine` to current protected baseline — PASS
-- DEV-5 / WS-3 — Create repository-local Python `.venv` — NEXT
-- DEV-6 — Configure VS Code + Codex — pending
+- DEV-5 / WS-3 — Repository-local Python `.venv` using Python 3.12 — PASS (`Python 3.12.14`; recreated after repo relocation and verified at the new path)
+- DEV-6 — Integrate repository into the shared multi-root VS Code / AI development environment while preserving repo-local execution boundaries — NEXT
 - DEV-7 — Add immutable DIRECTV master locally — pending
 - DEV-8 — Validate local environment — pending
 
 ## Workspace isolation rule
 
-The desktop/VS Code environment may contain multiple sibling repositories, but this project must treat only `/Users/jimmarkunas/Development/figma-layer-decomposer` as its writable project root. `~/Development` itself must not become a Git repository or shared project root. Repo-local `AGENTS.md` defines mandatory agent preflight and cross-repository boundaries.
+The shared VS Code environment may contain multiple sibling repositories, but this project must treat only `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer` as its writable project root. `/Users/jimmarkunas/Development/Jim` and `~/Development` are workspace/container directories only and must not become Git repositories or shared mutation roots. Repo-local `AGENTS.md` defines mandatory agent preflight and cross-repository boundaries. Shared extensions and MCP availability may live at the VS Code environment/profile level; Git state, dependencies, Python environments, project guardrails, and execution remain repository-local.
 
 ## Pipeline roadmap
 
@@ -193,7 +195,7 @@ The desktop/VS Code environment may contain multiple sibling repositories, but t
 
 ## Current next step
 
-`DEV-5 / WS-3 — Create the repository-local Python .venv using Python 3.12.`
+`DEV-6 — Add Figma Layer Decomposer to the shared multi-root VS Code / AI development environment and verify repo-local Git, AGENTS.md, and .venv boundaries before implementation.`
 
 ## Continuity protocol
 
