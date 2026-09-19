@@ -1,0 +1,126 @@
+{
+  "version": "0.1.0",
+  "mockup_id": "directv-hero-01",
+  "canvas": {
+    "width": 1586,
+    "height": 992
+  },
+  "source": {
+    "file": "input/directv-hero-01/master.png",
+    "immutable": true,
+    "sha256": null
+  },
+  "targets": {
+    "portrait": {
+      "kind": "clean_plate",
+      "depends_on": [],
+      "core_bounds": {"x": 620, "y": 78, "width": 382, "height": 717},
+      "approved_zone": {"x": 596, "y": 54, "width": 430, "height": 765},
+      "halo_px": 24,
+      "mask": {
+        "file": "input/directv-hero-01/masks/portrait.png",
+        "mode": "full_canvas"
+      },
+      "output": {
+        "canonical_file": "output/directv-hero-01/background/portrait-clean-plate.png",
+        "preview_file": "output/directv-hero-01/background/portrait-clean-plate-preview.png",
+        "qa_report": "output/directv-hero-01/qa/portrait-report.json"
+      },
+      "figma_placement": {
+        "name": "Portrait Clean Plate — 3B",
+        "destination_group": "01_BACKGROUND",
+        "bounds": {"x": 596, "y": 54, "width": 430, "height": 765}
+      }
+    },
+    "tv": {
+      "kind": "clean_plate",
+      "depends_on": ["portrait"],
+      "core_bounds": {"x": 913, "y": 413, "width": 544, "height": 397},
+      "approved_zone": {"x": 889, "y": 389, "width": 592, "height": 445},
+      "halo_px": 24,
+      "mask": {
+        "file": "input/directv-hero-01/masks/tv.png",
+        "mode": "full_canvas"
+      },
+      "output": {
+        "canonical_file": "output/directv-hero-01/background/tv-clean-plate.png",
+        "preview_file": "output/directv-hero-01/background/tv-clean-plate-preview.png",
+        "qa_report": "output/directv-hero-01/qa/tv-report.json"
+      },
+      "figma_placement": {
+        "name": "TV Clean Plate — 3C",
+        "destination_group": "01_BACKGROUND",
+        "bounds": {"x": 889, "y": 389, "width": 592, "height": 445}
+      }
+    },
+    "phone": {
+      "kind": "clean_plate",
+      "depends_on": ["tv"],
+      "core_bounds": {"x": 791, "y": 532, "width": 132, "height": 280},
+      "approved_zone": {"x": 767, "y": 508, "width": 180, "height": 328},
+      "halo_px": 24,
+      "mask": {
+        "file": "input/directv-hero-01/masks/phone.png",
+        "mode": "full_canvas"
+      },
+      "output": {
+        "canonical_file": "output/directv-hero-01/background/phone-clean-plate.png",
+        "preview_file": "output/directv-hero-01/background/phone-clean-plate-preview.png",
+        "qa_report": "output/directv-hero-01/qa/phone-report.json"
+      },
+      "figma_placement": {
+        "name": "Phone Clean Plate — 3D",
+        "destination_group": "01_BACKGROUND",
+        "bounds": {"x": 767, "y": 508, "width": 180, "height": 328}
+      }
+    },
+    "wall_slogan": {
+      "kind": "clean_plate",
+      "depends_on": ["phone"],
+      "core_bounds": {"x": 1044, "y": 190, "width": 145, "height": 135},
+      "approved_zone": {"x": 1020, "y": 166, "width": 193, "height": 183},
+      "halo_px": 24,
+      "mask": {
+        "file": "input/directv-hero-01/masks/wall-slogan.png",
+        "mode": "full_canvas"
+      },
+      "output": {
+        "canonical_file": "output/directv-hero-01/background/wall-slogan-clean-plate.png",
+        "preview_file": "output/directv-hero-01/background/wall-slogan-clean-plate-preview.png",
+        "qa_report": "output/directv-hero-01/qa/wall-slogan-report.json"
+      },
+      "figma_placement": {
+        "name": "Wall Slogan Clean Plate — 3E",
+        "destination_group": "01_BACKGROUND",
+        "bounds": {"x": 1020, "y": 166, "width": 193, "height": 183}
+      }
+    },
+    "wall_underline": {
+      "kind": "clean_plate",
+      "depends_on": ["wall_slogan"],
+      "core_bounds": {"x": 1060, "y": 338, "width": 62, "height": 5},
+      "approved_zone": {"x": 1036, "y": 314, "width": 110, "height": 53},
+      "halo_px": 24,
+      "mask": {
+        "file": "input/directv-hero-01/masks/wall-underline.png",
+        "mode": "full_canvas"
+      },
+      "output": {
+        "canonical_file": "output/directv-hero-01/background/wall-underline-clean-plate.png",
+        "preview_file": "output/directv-hero-01/background/wall-underline-clean-plate-preview.png",
+        "qa_report": "output/directv-hero-01/qa/wall-underline-report.json"
+      },
+      "figma_placement": {
+        "name": "Wall Underline Clean Plate — 3F",
+        "destination_group": "01_BACKGROUND",
+        "bounds": {"x": 1036, "y": 314, "width": 110, "height": 53}
+      }
+    }
+  },
+  "sequence": ["portrait", "tv", "phone", "wall_slogan", "wall_underline"],
+  "figma": {
+    "file_key": "3ZYkEtZVyRH9B2DfVpersf",
+    "editable_frame_node_id": "240:5",
+    "master_reference_node_id": "240:4"
+  }
+}
