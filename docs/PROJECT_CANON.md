@@ -40,8 +40,8 @@ Turn approved flat mock-up PNGs into genuinely editable layered Figma compositio
 
 - Repository: `https://github.com/jimmarkunas/figma-layer-decomposer`
 - Default branch: `main`
-- Current implementation branch: `feature/3b1-clean-plate-engine`
-- Current implementation issue: `#1 — 3B.1 — Implement deterministic clean-plate pipeline`
+- Current implementation branch: `main` (3B.1 merged; 3B.2 branch not yet created)
+- Completed implementation issue: `#1 — 3B.1 — Implement deterministic clean-plate pipeline`
 - Local repository path: `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer`
 - Product status: standalone product inside the shared Jim development workspace.
 
@@ -88,7 +88,8 @@ Top-level groups inside the editable frame:
 - 3A — Define exact removal geometry — PASS
 - 3A.1 — Remove unapproved wall cleanup patches — PASS
 - 3B.0 — Canonical clean-plate contract + repo bootstrap — COMPLETE
-- 3B.1 — Deterministic clean-plate engine — NEXT IMPLEMENTATION PACKAGE
+- 3B.1 — Deterministic clean-plate engine — COMPLETE
+- 3B.2 — Generate DIRECTV portrait clean-plate candidate — NEXT
 
 ## Approved DIRECTV removal geometry
 
@@ -178,8 +179,8 @@ The shared VS Code environment may contain multiple sibling repositories, but th
 
 ## Pipeline roadmap
 
-- 3B.1 — Codex implements deterministic clean-plate engine
-- 3B.2 — Generate DIRECTV portrait clean-plate candidate
+- 3B.1 — Deterministic clean-plate engine — COMPLETE
+- 3B.2 — Generate DIRECTV portrait clean-plate candidate — NEXT
 - 3B.3 — Automated QA
 - 3B.4 — Human visual QA
 - 3B.5 — Push approved clean plate into Figma
@@ -195,7 +196,7 @@ The shared VS Code environment may contain multiple sibling repositories, but th
 
 ## Current next step
 
-`3B.1 — Implement deterministic clean-plate engine.`
+`3B.2 — Generate DIRECTV portrait clean-plate candidate.`
 
 ## Continuity protocol
 
