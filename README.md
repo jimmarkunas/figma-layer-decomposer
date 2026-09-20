@@ -83,6 +83,43 @@ The first production case is the DIRECTV hero mock-up:
 
 See [`docs/CLEAN_PLATE_CONTRACT.md`](docs/CLEAN_PLATE_CONTRACT.md) for the implementation contract and [`examples/directv/manifest.example.json`](examples/directv/manifest.example.json) for the first manifest.
 
+## Local 3B.1 commands
+
+From the repository root, create/use the repository-local Python 3.12 environment and install the package:
+
+```bash
+python3.12 -m venv .venv
+./.venv/bin/python -m pip install -e . pytest
+```
+
+Run the full test suite and whitespace validation:
+
+```bash
+./.venv/bin/pytest -q
+git diff --check
+```
+
+Show the CLI help, and verify missing required arguments fail non-zero:
+
+```bash
+./.venv/bin/clean-plate --help
+./.venv/bin/clean-plate
+```
+
+Run a clean-plate stage with a manifest, schema, source, mask, target, and unique run directory:
+
+```bash
+./.venv/bin/clean-plate \
+  --manifest examples/directv/manifest.example.json \
+  --schema schema/layer-manifest.schema.json \
+  --source input/directv-hero-01/master.png \
+  --mask input/directv-hero-01/masks/portrait.png \
+  --target portrait \
+  --run-dir runs/directv-portrait-$(date +%Y%m%d-%H%M%S)
+```
+
+Each run emits `candidate.png`, `preview.png`, `difference.png`, `unchanged-region-diff.png`, and `report.json` under its run directory. The command exits non-zero when any automated gate fails; `human_gate` remains `PENDING`.
+
 ## Planned output structure
 
 ```text

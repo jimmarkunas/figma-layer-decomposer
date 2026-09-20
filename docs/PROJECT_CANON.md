@@ -168,9 +168,9 @@ At minimum:
 - WS-4 — Repository-root / branch / clean-tree preflight — PASS
 - DEV-4 — Sync/switch local and remote `feature/3b1-clean-plate-engine` to current protected baseline — PASS
 - DEV-5 / WS-3 — Repository-local Python `.venv` using Python 3.12 — PASS (`Python 3.12.14`; recreated after repo relocation and verified at the new path)
-- DEV-6 — Integrate repository into the shared multi-root VS Code / AI development environment while preserving repo-local execution boundaries — NEXT
-- DEV-7 — Add immutable DIRECTV master locally — pending
-- DEV-8 — Validate local environment — pending
+- DEV-6 — Integrate repository into the shared multi-root VS Code / AI development environment while preserving repo-local execution boundaries — PASS
+- DEV-7 — Add immutable DIRECTV master locally — PASS
+- DEV-8 — Validate local environment — PASS
 
 ## Workspace isolation rule
 
@@ -195,7 +195,7 @@ The shared VS Code environment may contain multiple sibling repositories, but th
 
 ## Current next step
 
-`DEV-6 — Add Figma Layer Decomposer to the shared multi-root VS Code / AI development environment and verify repo-local Git, AGENTS.md, and .venv boundaries before implementation.`
+`3B.1 — Implement deterministic clean-plate engine.`
 
 ## Continuity protocol
 
