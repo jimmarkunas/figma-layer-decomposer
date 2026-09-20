@@ -37,6 +37,7 @@ Turn approved flat mock-up PNGs into genuinely editable layered Figma compositio
 - Prefer deterministic scripting, exact source recovery, masks, pixel diffs, and repeatable tooling over manual approximation.
 - Use Codex for bounded local implementation tasks involving asset inventory, image processing, tests, manifests, file operations, and automation.
 - Use ChatGPT for architecture, decomposition strategy, acceptance criteria, source/provenance review, Figma QA, and technical review.
+- Do not introduce abstractions, services, packages, or infrastructure speculatively. Add reusable architecture only after DIRECTV proves a second real consumer or repeated mechanic.
 
 ## Repository
 
@@ -97,6 +98,22 @@ The mandatory gate is:
 - **SR-4 — Decomposition-plan approval** — review the inventory/classification and explicitly authorize any `RECONSTRUCT_HIDDEN_PIXELS` work before reconstruction resumes.
 
 If the source strategy is unresolved, stop `BLOCKED` rather than increasing fallback-tool complexity.
+
+## Architecture checkpoint
+
+After SR-4 and before production decomposition resumes, run a bounded architecture checkpoint:
+
+- compare the approved DIRECTV decomposition plan against the existing package boundaries;
+- identify only reusable mechanics DIRECTV has actually proven are needed;
+- extract shared primitives only when there is a real second consumer or demonstrated duplication;
+- keep `cleanplate` as a focused fallback subsystem rather than turning it into a general orchestration monolith;
+- do not add speculative services, queues, databases, UI frameworks, plugin systems, abstract factories, or package layers;
+- explicitly decide whether source recovery/provenance, extraction, QA, manifest handling, and orchestration need reusable modules now or should remain deferred;
+- record any approved architecture changes before implementation resumes.
+
+This checkpoint is a scalability guardrail, not a refactor mandate. If the current structure is sufficient, the correct result is `NO CHANGE`.
+
+Before P1 generalization, add a reproducibility checkpoint that pins/locks runtime dependencies used for deterministic raster output. The lock/pin must cover at least Pillow, NumPy, OpenCV, and jsonschema, and must not interrupt the current DIRECTV proof unless a version mismatch is actively causing non-deterministic behavior.
 
 ## Completed work
 
@@ -221,10 +238,11 @@ The shared VS Code environment may contain multiple sibling repositories, but th
 - 3A.1 — Remove unapproved wall patches — PASS
 - 3B.0 — Clean-plate contract + repo bootstrap — COMPLETE
 - 3B.1 — Deterministic clean-plate engine — COMPLETE as fallback infrastructure
-- **SR-1 — Source asset inventory — NEXT**
-- SR-2 — Provenance / exact-match verification
+- SR-1 — Source asset inventory — COMPLETE for current DIRECTV inventory scope
+- **SR-2 — Provenance / exact-match verification — ACTIVE**
 - SR-3 — Per-layer decomposition classification
 - SR-4 — Decomposition-plan approval gate
+- **ARC-1 — Post-SR architecture checkpoint** — review package boundaries and add only proven reusable primitives; `NO CHANGE` is an acceptable result
 - 3B.2 — Generate DIRECTV portrait clean-plate candidate — RESUME ONLY if portrait/background hidden pixels are classified `RECONSTRUCT_HIDDEN_PIXELS`
 - 3B.3 — Automated unchanged-region QA
 - 3B.4 — Human visual QA
@@ -237,13 +255,14 @@ The shared VS Code environment may contain multiple sibling repositories, but th
 - 3H — Final approved background
 - 4A–4F — Portrait recovery/extraction + QA according to SR classification
 - 5A–5I — Device recovery/extraction + QA according to SR classification
+- **DEP-1 — Deterministic dependency lock/pinning** — complete before P1 generalization; pin/lock raster-processing/runtime dependencies for reproducible output
 - P1–P4 — Generalize and package for mock-ups #2–#6, preserving the source-first gate
 
 ## Current next step
 
-`SR-1 — Source asset inventory for the DIRECTV reference.`
+`SR-2 — Provenance / exact-match verification for the DIRECTV portrait candidates.`
 
-Do not generate another portrait mask or clean-plate candidate before SR-1 through SR-4 are complete.
+Do not generate another portrait mask or clean-plate candidate before SR-1 through SR-4 and ARC-1 are complete.
 
 ## Continuity protocol
 
@@ -256,4 +275,4 @@ At the start of any new ChatGPT or Codex session:
 5. Confirm current Git root, branch, working-tree status, issue, and roadmap before editing.
 6. Perform one bounded operation, validate it, then stop.
 
-Update this file whenever the accepted roadmap state, next step, canonical coordinates, source-recovery state, or source-of-truth locations materially change.
+Update this file whenever the accepted roadmap state, next step, canonical coordinates, source-recovery state, architecture checkpoint state, dependency reproducibility state, or source-of-truth locations materially change.
