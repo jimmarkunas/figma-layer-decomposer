@@ -16,4 +16,4 @@ extract-master = "extract.cli:main"
 testpaths = ["tests"]
 
 [tool.setuptools.packages.find]
-include = ["cleanplate*", "extract*"]
+include = ["cleanplate*", "decomposer*", "extract*"]

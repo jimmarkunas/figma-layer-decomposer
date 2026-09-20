@@ -1,17 +1,12 @@
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw
 
-from cleanplate.core import Bounds, load_mask, load_rgb, validate_bounds, validate_manifest
-
-
-def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+from decomposer.primitives import Bounds, load_mask, load_rgb, sha256, validate_bounds, validate_manifest
 
 
 def extract(manifest_path: Path, schema_path: Path, source_path: Path, mask_path: Path, target_id: str, run_dir: Path) -> dict:
