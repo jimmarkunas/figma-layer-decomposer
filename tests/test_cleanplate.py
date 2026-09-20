@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from cleanplate.core import Bounds, changed_pixel_counts, run, validate_manifest
+from cleanplate.core import Bounds, assert_unchanged_region, changed_pixel_counts, run, validate_manifest
 
 ROOT = Path(__file__).parents[1]
 
@@ -13,12 +13,17 @@ class SolidBackend:
     def reconstruct(self, master, target_mask, approved_zone):
         return np.full_like(master[approved_zone.y:approved_zone.bottom, approved_zone.x:approved_zone.right], 77)
 
-def setup_case(tmp_path, *, zone=(2, 2, 4, 4), core=(3, 3, 2, 2), canvas=(10, 8), mask_size=None):
+def setup_case(tmp_path, *, zone=(2, 2, 4, 4), core=(3, 3, 2, 2), canvas=(10, 8), mask_size=None, mask_mode="full_canvas", mask_bounds=None):
     w, h = canvas; source = np.arange(w*h*3, dtype=np.uint8).reshape(h, w, 3)
     source_path = tmp_path / "master.png"; mask_path = tmp_path / "mask.png"
     Image.fromarray(source).save(source_path)
-    mw, mh = mask_size or canvas; mask = np.zeros((mh, mw), dtype=np.uint8); mask[3:min(5,mh), 3:min(5,mw)] = 255; Image.fromarray(mask).save(mask_path)
-    manifest = {"version":"0.1.0","mockup_id":"synthetic","canvas":{"width":w,"height":h},"source":{"file":"master.png","immutable":True,"sha256":None},"targets":{"target":{"kind":"clean_plate","core_bounds":dict(zip(("x","y","width","height"),core)),"approved_zone":dict(zip(("x","y","width","height"),zone)),"halo_px":1,"mask":{"file":"mask.png","mode":"full_canvas"},"output":{"canonical_file":"candidate.png","preview_file":"preview.png","qa_report":"report.json"},"figma_placement":{"name":"x","destination_group":"01_BACKGROUND","bounds":dict(zip(("x","y","width","height"),zone))}}},"sequence":["target"]}
+    mw, mh = mask_size or (mask_bounds[2], mask_bounds[3]) if mask_mode == "bounded" and mask_bounds else mask_size or canvas; mask = np.zeros((mh, mw), dtype=np.uint8)
+    if mask_mode == "bounded": mask[:, :] = 255
+    else: mask[3:min(5,mh), 3:min(5,mw)] = 255
+    Image.fromarray(mask).save(mask_path)
+    mask_spec = {"file":"mask.png","mode":mask_mode};
+    if mask_bounds: mask_spec["bounds"] = dict(zip(("x","y","width","height"),mask_bounds))
+    manifest = {"version":"0.1.0","mockup_id":"synthetic","canvas":{"width":w,"height":h},"source":{"file":"master.png","immutable":True,"sha256":None},"targets":{"target":{"kind":"clean_plate","core_bounds":dict(zip(("x","y","width","height"),core)),"approved_zone":dict(zip(("x","y","width","height"),zone)),"halo_px":1,"mask":mask_spec,"output":{"canonical_file":"candidate.png","preview_file":"preview.png","qa_report":"report.json"},"figma_placement":{"name":"x","destination_group":"01_BACKGROUND","bounds":dict(zip(("x","y","width","height"),zone))}}},"sequence":["target"]}
     mp = tmp_path / "manifest.json"; mp.write_text(json.dumps(manifest)); return mp, source_path, mask_path, manifest
 
 def test_schema_validation_actually_runs(tmp_path):
@@ -52,7 +57,23 @@ def test_run_artifacts_unchanged_gate_and_serialization(tmp_path):
 def test_deliberate_outside_pixel_fails_gate(tmp_path):
     mp, source_path, mask, _ = setup_case(tmp_path); run(mp, ROOT/"schema/layer-manifest.schema.json", source_path, mask, "target", tmp_path/"run", SolidBackend())
     source = np.asarray(Image.open(source_path)); output = np.asarray(Image.open(tmp_path/"run/candidate.png")).copy(); output[0,0] ^= 1
-    assert changed_pixel_counts(source, output, Bounds(2,2,4,4))[1] == 1
+    with pytest.raises(ValueError, match="unchanged-region gate failed"): assert_unchanged_region(source, output, Bounds(2,2,4,4))
+
+def test_bounded_mask_is_placed_and_validated(tmp_path):
+    mp, source, mask, _ = setup_case(tmp_path, mask_mode="bounded", mask_bounds=(3, 3, 2, 2))
+    report = run(mp, ROOT/"schema/layer-manifest.schema.json", source, mask, "target", tmp_path/"run", SolidBackend())
+    assert report["changed_pixels_inside_zone"] == 4
+
+def test_serialized_candidate_is_checked_by_unchanged_gate(tmp_path, monkeypatch):
+    from cleanplate import core
+    original = core.load_rgb
+    def tamper_once(path):
+        image = original(path)
+        if path.name == "candidate.png": image[0, 0, 0] ^= 1
+        return image
+    monkeypatch.setattr(core, "load_rgb", tamper_once)
+    mp, source, mask, _ = setup_case(tmp_path)
+    with pytest.raises(ValueError, match="unchanged-region gate failed"): run(mp, ROOT/"schema/layer-manifest.schema.json", source, mask, "target", tmp_path/"run", SolidBackend())
 
 def test_cumulative_sequencing_uses_prior_output(tmp_path):
     mp, source, mask, manifest = setup_case(tmp_path); first = run(mp, ROOT/"schema/layer-manifest.schema.json", source, mask, "target", tmp_path/"first", SolidBackend())

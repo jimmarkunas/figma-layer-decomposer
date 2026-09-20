@@ -43,11 +43,18 @@ def validate_manifest(manifest_path: Path, schema_path: Path) -> dict:
 def load_rgb(path: Path) -> np.ndarray:
     with Image.open(path) as image: return np.asarray(image.convert("RGB")).copy()
 
-def load_mask(path: Path, canvas: tuple[int, int]) -> np.ndarray:
+def load_mask(path: Path, canvas: tuple[int, int], mode: str, bounds: Bounds | None = None) -> np.ndarray:
     with Image.open(path) as image:
-        if image.size != canvas: raise ValueError(f"mask dimensions {image.size} do not match canvas {canvas}")
-        if image.mode == "RGBA": return np.asarray(image.getchannel("A"), dtype=np.uint8).copy()
-        return np.asarray(image.convert("L"), dtype=np.uint8).copy()
+        if mode == "full_canvas":
+            if image.size != canvas: raise ValueError(f"mask dimensions {image.size} do not match canvas {canvas}")
+            if image.mode == "RGBA": return np.asarray(image.getchannel("A"), dtype=np.uint8).copy()
+            return np.asarray(image.convert("L"), dtype=np.uint8).copy()
+        if mode != "bounded" or bounds is None: raise ValueError("bounded mask mode requires bounds")
+        validate_bounds(bounds, canvas, "mask bounds")
+        if image.size != (bounds.width, bounds.height): raise ValueError(f"bounded mask dimensions {image.size} do not match mask bounds")
+        bounded = np.asarray(image.getchannel("A") if image.mode == "RGBA" else image.convert("L"), dtype=np.uint8)
+        mask = np.zeros((canvas[1], canvas[0]), dtype=np.uint8); mask[bounds.y:bounds.bottom, bounds.x:bounds.right] = bounded
+        return mask.copy()
 
 def validate_bounds(bounds: Bounds, canvas: tuple[int, int], label: str):
     w, h = canvas
@@ -60,6 +67,10 @@ def changed_pixel_counts(source: np.ndarray, output: np.ndarray, zone: Bounds) -
     inside = np.zeros(changed.shape, dtype=bool); inside[zone.y:zone.bottom, zone.x:zone.right] = True
     return int((changed & inside).sum()), int((changed & ~inside).sum())
 
+def assert_unchanged_region(source: np.ndarray, output: np.ndarray, zone: Bounds) -> None:
+    _, outside_count = changed_pixel_counts(source, output, zone)
+    if outside_count: raise ValueError(f"unchanged-region gate failed: {outside_count} outside-zone pixels changed")
+
 def run(manifest_path: Path, schema_path: Path, source_path: Path, mask_path: Path, target_id: str, run_dir: Path, backend=None) -> dict:
     manifest = validate_manifest(manifest_path, schema_path)
     if target_id not in manifest["targets"]: raise ValueError(f"unknown target: {target_id}")
@@ -69,7 +80,8 @@ def run(manifest_path: Path, schema_path: Path, source_path: Path, mask_path: Pa
     core, zone = _bounds(target["core_bounds"]), _bounds(target["approved_zone"])
     validate_bounds(core, canvas, "core bounds"); validate_bounds(zone, canvas, "approved zone")
     if not (zone.x <= core.x and zone.y <= core.y and zone.right >= core.right and zone.bottom >= core.bottom): raise ValueError("core bounds are not contained by approved zone")
-    mask = load_mask(mask_path, canvas)
+    mask_spec = target["mask"]; mask_bounds = _bounds(mask_spec["bounds"]) if "bounds" in mask_spec else None
+    mask = load_mask(mask_path, canvas, mask_spec["mode"], mask_bounds)
     edit_mask = ((mask > 0) & (np.indices(mask.shape)[1] >= zone.x) & (np.indices(mask.shape)[1] < zone.right) & (np.indices(mask.shape)[0] >= zone.y) & (np.indices(mask.shape)[0] < zone.bottom))
     if not edit_mask.any(): raise ValueError("target mask has no pixels inside approved zone")
     backend = backend or OpenCVInpaintingBackend()
@@ -85,7 +97,8 @@ def run(manifest_path: Path, schema_path: Path, source_path: Path, mask_path: Pa
     unchanged = np.zeros_like(diff); unchanged[outside] = 255; Image.fromarray(unchanged).save(run_dir / "unchanged-region-diff.png")
     reload_image = load_rgb(run_dir / "candidate.png")
     if reload_image.shape != source.shape: raise ValueError("serialized output dimensions changed")
+    assert_unchanged_region(source, reload_image, zone)
     report = {"mockup_id": manifest["mockup_id"], "target_id": target_id, "pipeline_version": manifest["version"], "source_sha256": _sha256(source_path), "output_sha256": _sha256(run_dir / "candidate.png"), "canvas": {"width": canvas[0], "height": canvas[1]}, "core_bounds": core.as_dict(), "approved_zone": zone.as_dict(), "changed_pixels_inside_zone": inside_count, "changed_pixels_outside_zone": outside_count, "automated_gate": "PASS" if outside_count == 0 else "FAIL", "human_gate": "PENDING", "notes": []}
     (run_dir / "report.json").write_text(json.dumps(report, indent=2) + "\n")
-    if outside_count: raise ValueError("unchanged-region gate failed")
+    assert_unchanged_region(source, output, zone)
     return report
