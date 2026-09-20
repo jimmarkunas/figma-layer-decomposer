@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "figma-layer-decomposer"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = ["Pillow", "numpy", "opencv-python-headless", "jsonschema"]
+dependencies = ["Pillow", "numpy", "opencv-python-headless", "jsonschema", "PyYAML"]
 
 [project.scripts]
 clean-plate = "cleanplate.cli:main"
