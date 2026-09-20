@@ -103,6 +103,46 @@ def test_execution_receipt_contains_required_guardrails(tmp_path: Path) -> None:
     assert receipt["promotion"] == "NOT_PROMOTED"
 
 
+def test_generic_named_inputs_validate_and_appear_in_receipt(tmp_path: Path) -> None:
+    source = tmp_path / "source.png"
+    clothing = tmp_path / "clothing.png"
+    previous = tmp_path / "previous.png"
+    Image.new("RGBA", (4, 4), (1, 2, 3, 255)).save(source)
+    Image.new("RGBA", (4, 4), (4, 5, 6, 255)).save(clothing)
+    Image.new("RGBA", (4, 4), (7, 8, 9, 255)).save(previous)
+
+    contract = _base_contract(source)
+    contract["inputs"] = {
+        "identity_source": {
+            "path": str(source),
+            "sha256": _sha256(source),
+            "role": "identity reference",
+        },
+        "clothing_reference": {
+            "path": str(clothing),
+            "sha256": _sha256(clothing),
+            "role": "clothing reference",
+        },
+        "approved_previous_stage": {
+            "path": str(previous),
+            "sha256": _sha256(previous),
+            "role": "approved previous-stage artifact",
+        },
+    }
+    contract_file = tmp_path / "operation.yaml"
+    contract_file.write_text(yaml.safe_dump(contract), encoding="utf-8")
+
+    loaded = load_operation_contract(contract_file, SCHEMA_PATH)
+    receipt = execution_receipt(loaded)
+
+    assert set(receipt["inputs"]) == {
+        "identity_source",
+        "clothing_reference",
+        "approved_previous_stage",
+    }
+    assert receipt["inputs"]["clothing_reference"] == _sha256(clothing)
+
+
 def test_verify_input_hashes_fails_closed_on_mismatch(tmp_path: Path) -> None:
     source = tmp_path / "source.png"
     Image.new("RGBA", (4, 4), (0, 0, 0, 255)).save(source)
