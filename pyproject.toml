@@ -11,6 +11,7 @@ dependencies = ["Pillow", "numpy", "opencv-python-headless", "jsonschema", "PyYA
 [project.scripts]
 clean-plate = "cleanplate.cli:main"
 extract-master = "extract.cli:main"
+operation-guard = "decomposer.operation_guard_cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
