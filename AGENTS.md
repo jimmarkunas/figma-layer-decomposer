@@ -49,6 +49,20 @@ Clean-plate reconstruction is a fallback capability, not the default decompositi
 
 If source strategy is unresolved, stop and report `BLOCKED` rather than adding more masking/reconstruction tooling.
 
+## Promotion handoff boundary
+
+This repository terminates at `PROMOTION_READY` for reusable Personal Brand work.
+
+Before any task that claims a reconstruction is reusable, promotes or proposes promotion into canonical Personal Brand Figma, defines a semantic template contract, or implements React/PowerPoint consumption:
+
+1. Read `docs/PROMOTION_HANDOFF_CONTRACT.md`.
+2. Confirm whether the artifact is still `RECONSTRUCTION_ACTIVE` or has reached `PROMOTION_READY`.
+3. If the task starts after `PROMOTION_READY`, treat Personal Career Brand / PBDS-4 as the owning product context.
+4. Do not implement PBDS-owned reusable-template, semantic-contract, React-renderer, or PowerPoint-renderer work inside this repository merely because the source reconstruction originated here.
+5. Do not duplicate Personal Brand doctrine, the PBDS roadmap, or canonical Figma design-system rules into this repository. Follow the handoff pointers instead.
+
+The reconstruction/staging file `JM-Personal-Brand-V2` is not the permanent design-system authority. Promoted reusable templates belong in canonical `JM-Personal-Brand` Figma under PBDS ownership.
+
 ## Execution rules
 
 - One bounded operation → validate → stop.
@@ -80,4 +94,4 @@ Cleanup, when reconstruction is actually authorized, is cumulative:
 
 `Portrait → TV → Phone → Wall slogan → Wall underline`
 
-For current roadmap state, branch, coordinates, source-recovery status, and next action, defer to `docs/PROJECT_CANON.md` rather than duplicating mutable project state here.
+For current roadmap state, branch, coordinates, source-recovery status, next action, and promotion-terminal state, defer to `docs/PROJECT_CANON.md` rather than duplicating mutable project state here.
