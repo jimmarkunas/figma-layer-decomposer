@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This file is the canonical continuity handoff for the Figma Layer Decomposer project. It exists so ChatGPT, Codex, local development sessions, and future conversations can recover the current state without relying on one chat transcript.
+Canonical continuity handoff for the Figma Layer Decomposer project.
 
 ## Authority order
 
@@ -12,44 +12,34 @@ When sources conflict, use this order:
 2. `docs/CLEAN_PLATE_CONTRACT.md` — clean-plate implementation contract.
 3. `schema/layer-manifest.schema.json` — machine-readable manifest contract.
 4. This file — current project state, accepted decisions, roadmap, and next step.
-5. Notion mirror / ChatGPT Project uploads — convenience copies only.
+5. Notion / ChatGPT Project copies — convenience only.
 
-Do not infer approval from the mere existence of an artifact.
+Do not infer approval from artifact existence.
 
 ## Mission
 
-Turn approved flat mock-up PNGs into genuinely editable layered Figma compositions while preserving 1:1 visual fidelity to the immutable master image.
+Turn approved flat mock-up PNGs into genuinely editable layered Figma compositions while preserving 1:1 visual fidelity to the immutable master.
 
 ## Core rules
 
-- The master PNG is the acceptance authority.
 - Do not redesign, reinterpret, beautify, or improve approved mock-ups.
 - Preserve untouched source pixels exactly wherever possible.
-- Use a hybrid decomposition model: photographic/environmental content stays raster; editable text/UI/vectors are rebuilt natively in Figma.
-- **Source recovery comes before extraction or reconstruction.** Recover and verify exact original assets whenever possible.
-- Clean-plate reconstruction is a fallback for genuinely hidden pixels that cannot be recovered from a trustworthy source asset.
-- Clean-plate reconstruction happens outside Figma using the `figma-layer-decomposer` pipeline.
-- Figma is the destination and composition layer, not the raster-reconstruction engine.
-- Every raster layer must use deterministic coordinates and a machine-readable manifest.
-- No Figma upload or promotion occurs until automated QA and human visual QA pass.
-- Later steps may not repair failed earlier steps.
-- Work incrementally: one bounded operation → validate → stop.
-- Prefer deterministic scripting, exact source recovery, masks, pixel diffs, and repeatable tooling over manual approximation.
-- Use Codex for bounded local implementation tasks involving asset inventory, image processing, tests, manifests, file operations, and automation.
-- Use ChatGPT for architecture, decomposition strategy, acceptance criteria, source/provenance review, Figma QA, and technical review.
-- Do not introduce abstractions, services, packages, or infrastructure speculatively. Add reusable architecture only after DIRECTV proves a second real consumer or repeated mechanic.
+- Use hybrid decomposition: photographic/environmental content stays raster; editable text/UI/vectors are rebuilt natively in Figma.
+- Source recovery comes before extraction or reconstruction.
+- Figma is the destination/composition layer, not the raster reconstruction engine.
+- Every raster layer uses deterministic coordinates and machine-readable evidence.
+- No Figma promotion until automated QA and human visual QA pass.
+- Later stages may not repair failed earlier stages.
+- One bounded operation → validate → stop.
+- Prefer deterministic scripting, source recovery, masks, pixel diffs, and repeatable tooling over manual approximation.
+- Clean-plate reconstruction remains fallback infrastructure for hidden background/environment pixels.
 
 ## Repository
 
 - Repository: `https://github.com/jimmarkunas/figma-layer-decomposer`
 - Default branch: `main`
-- Current implementation branch: `feature/3b2-directv-portrait-candidate`
-- Current implementation issue: `#4 — 3B.2 — Generate DIRECTV portrait clean-plate candidate` — PAUSED until target-specific reconstruction prerequisites are satisfied
-- Completed source-recovery issue: `#5 — SR-1–SR-4 — Source asset recovery and decomposition gate`
-- Completed extraction-engine issue: `#7 — EX-0 — Deterministic master-pixel extraction engine`
-- Completed implementation issue: `#1 — 3B.1 — Implement deterministic clean-plate pipeline`
-- Local repository path: `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer`
-- Product status: standalone product inside the shared Jim development workspace.
+- Active implementation branch: `feature/3b2-directv-portrait-candidate`
+- Local path: `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer`
 
 ## Figma
 
@@ -60,13 +50,13 @@ Turn approved flat mock-up PNGs into genuinely editable layered Figma compositio
 - Editable frame: `240:5 — Editable Master Reference 01 — Layered`
 - Canvas: `1586 × 992`
 
-## Current reference mock-up
+## Immutable DIRECTV master
 
-DIRECTV hero, 1586 × 992.
+- Local path: `input/directv-hero-01/master.png`
+- Dimensions: `1586 × 992`
+- SHA-256: `d5a66264cc44c449f0e29d045d729c81fe51564b768b371fd9544b34b60f22e6`
 
-## Accepted Figma structure
-
-Top-level groups inside the editable frame:
+## Accepted Figma top-level structure
 
 - `00_MASTER_REFERENCE`
 - `01_BACKGROUND`
@@ -79,32 +69,24 @@ Top-level groups inside the editable frame:
 - `08_PROCESS_STRIP`
 - `09_BOTTOM_SIGNATURE`
 
-## Source-first decomposition gate
+## Source-first classification model
 
-`docs/SOURCE_ASSET_RECOVERY.md` defines the mandatory operating procedure before extraction or clean-plate reconstruction.
+`docs/SOURCE_ASSET_RECOVERY.md` is mandatory before extraction/reconstruction decisions.
 
-Every material layer must be classified as exactly one of:
+Every material layer has exactly one primary implementation classification:
 
 - `RECOVER_SOURCE`
 - `EXTRACT_FROM_MASTER`
+- `REBUILD_RASTER_FROM_SOURCE`
 - `REBUILD_NATIVE`
 - `RECONSTRUCT_HIDDEN_PIXELS`
 
-No mask generation, inpainting, semantic segmentation, texture synthesis, or clean-plate candidate run is authorized until source recovery has been attempted and the relevant layer is explicitly classified `RECONSTRUCT_HIDDEN_PIXELS`.
+`REBUILD_RASTER_FROM_SOURCE` is used when a trustworthy related source exists, the approved mock-up was derived from it, but the flattened master cannot contain the complete independent foreground layer because of occlusion.
 
-The mandatory gate is:
+## DIRECTV approved decomposition classification
 
-- **SR-1 — Source asset inventory** — inspect Figma raw/image assets, current-repo assets, explicitly authorized related repositories, and other approved source locations.
-- **SR-2 — Provenance / exact-match verification** — verify candidate assets against the immutable master using hashes, pixel alignment, deterministic transforms, and/or Figma provenance.
-- **SR-3 — Per-layer decomposition classification** — assign one approved implementation method to every material layer.
-- **SR-4 — Decomposition-plan approval** — review the inventory/classification and explicitly authorize any `RECONSTRUCT_HIDDEN_PIXELS` work before reconstruction resumes.
-
-For DIRECTV, SR-1 through SR-4 are COMPLETE. The approved plan is `docs/DIRECTV_DECOMPOSITION_PLAN.md` with structured mirror `examples/directv/decomposition-plan.json`.
-
-## Approved DIRECTV decomposition classification
-
-- Background/environment — `RECONSTRUCT_HIDDEN_PIXELS` only for genuinely hidden pixels exposed by approved foreground removal; all already-visible background pixels remain exact master pixels.
-- Portrait — `EXTRACT_FROM_MASTER`.
+- Background/environment — `RECONSTRUCT_HIDDEN_PIXELS` only for genuinely hidden pixels exposed by approved foreground removal; already-visible background remains exact master pixels.
+- Portrait — `REBUILD_RASTER_FROM_SOURCE`.
 - TV hardware — `EXTRACT_FROM_MASTER`.
 - TV screen content — `EXTRACT_FROM_MASTER`.
 - Phone hardware — `EXTRACT_FROM_MASTER`.
@@ -117,229 +99,170 @@ For DIRECTV, SR-1 through SR-4 are COMPLETE. The approved plan is `docs/DIRECTV_
 - Process strip — `REBUILD_NATIVE`.
 - Bottom signature — `REBUILD_NATIVE`.
 
-Portrait source recovery remains inconclusive; no portfolio portrait candidate is approved as `RECOVER_SOURCE`.
+Canonical plan: `docs/DIRECTV_DECOMPOSITION_PLAN.md`.
+Structured mirror: `examples/directv/decomposition-plan.json`.
 
-## ARC-1 architecture checkpoint
+## Portrait reclassification decision
 
-`docs/ARC_1_ARCHITECTURE_CHECKPOINT.md` records the approved post-SR architecture review.
+Earlier portrait classification `EXTRACT_FROM_MASTER` is superseded.
 
-ARC-1 result: **PASS WITH MINIMAL ARCHITECTURE ADDITION**.
+New user-supplied provenance establishes that the DIRECTV portrait was derived from the user's website portrait. SR-2 had only shown that the website candidates were not provably the exact final standalone DIRECTV asset; it did not mean they were unrelated.
 
-Approved architecture changes:
+Extraction is insufficient because TV/phone occlusion hides part of the portrait. A crop from the master cannot produce the complete independent portrait layer required by the product.
 
-1. Keep `cleanplate` focused exclusively on `RECONSTRUCT_HIDDEN_PIXELS` fallback reconstruction.
-2. Add one focused deterministic `EXTRACT_FROM_MASTER` subsystem because DIRECTV has five real extraction consumers.
-3. Permit one minimal project-specific shared-primitives module for mechanics now proven to have two real consumers: bounds, hashing, manifest/schema validation, RGB loading, mask loading, and bounds validation.
-4. Keep extraction-specific QA inside the extraction subsystem for now; do not create a general QA framework yet.
-5. Do not productize provenance/source recovery yet.
-6. Do not add a workflow/orchestration framework, database, queue, plugin architecture, service/API layer, GUI, or broad package restructuring.
-7. Do not expand `schema/layer-manifest.schema.json` unless EX-0 proves a concrete missing field or invariant; it already supports `raster_extract` and `screen_extract`.
-8. Native Figma rebuild remains outside the Python raster engine.
+Therefore the portrait is now `REBUILD_RASTER_FROM_SOURCE` under `docs/DIRECTV_PORTRAIT_REBUILD_CONTRACT.md`.
 
-## EX-0 extraction engine
+The standalone portrait must be rebuilt from the website portrait source relationship while the immutable DIRECTV master remains the exact visual target for visible identity, pose, crop, clothing treatment, lighting, and placement.
 
-EX-0 is COMPLETE and accepted after the ARC-1 boundary fix.
+New portrait content is allowed only where the standalone portrait is hidden by TV/phone occlusion in the master. Visible target appearance must pass comparison against the master.
 
-- `extract/` provides deterministic `EXTRACT_FROM_MASTER` execution for `raster_extract` and `screen_extract` targets.
-- Output is bounded RGBA using deterministic Figma placement bounds.
-- Participating RGB pixels are exact immutable-master pixels.
-- Alpha values are preserved exactly, including intermediate alpha.
-- Source immutability is verified by SHA-256 before/after execution.
-- `decomposer/primitives.py` is the approved minimal shared seam for bounds, hashing, manifest validation, RGB loading, mask loading, and bounds validation.
-- `cleanplate` remains reconstruction-only; extraction no longer imports shared mechanics from `cleanplate.core`.
-- No production DIRECTV extraction was performed during EX-0.
+After human approval, portrait occupancy/alpha is derived from the approved rebuilt portrait itself. Do not generate another portrait-removal mask first.
 
-Accepted implementation commits:
+## Rejected portrait paths
 
-- `1c3767561d39f503fc41cdc3eb804d31099fbb67` — extraction engine
-- `e2e433f848b7e83cfc86ca9a1ec9b7c6e30989d2` — isolate shared decomposition primitives
+The following remain rejected for production use:
 
-Validation at acceptance:
+- initial GrabCut portrait mask;
+- semantic portrait mask candidate `65f996ccb4bb7d1e1f7ab98ea94b11866005b8b578c95d818767be3e23ad7acd`;
+- source-proxy mask candidate;
+- subtractive semantic correction candidate `cd450e0e01426f48a071e69f56de5289705ac814db32ab116e7d7b79e315f74d`;
+- any new portrait-removal-mask loop before portrait rebuild approval.
 
-- full pytest: 17 passed
-- extraction pytest: 6 passed
-- synthetic smoke: PASS
-- RGB mismatches: 0
-- alpha mismatches: 0
-- partial-alpha pixels: 2
-- source unchanged: true
-- `git diff --check`: PASS
+The failed mask attempts proved that inferring complete portrait occupancy from the flattened composition first was the wrong dependency order.
 
-Before P1 generalization, add a reproducibility checkpoint that pins/locks runtime dependencies used for deterministic raster output. The lock/pin must cover at least Pillow, NumPy, OpenCV, and jsonschema, and must not interrupt the current DIRECTV proof unless a version mismatch is actively causing non-deterministic behavior.
+## Completed architecture / infrastructure
 
-## Completed work
+- M2 Structure — COMPLETE.
+- 3A Removal geometry — PASS.
+- 3A.1 Remove unapproved wall patches — PASS.
+- 3B.0 Clean-plate contract + repo bootstrap — COMPLETE.
+- 3B.1 Deterministic clean-plate engine — COMPLETE as fallback infrastructure.
+- SR-1 Source asset inventory — COMPLETE.
+- SR-2 Provenance/exact-match verification — COMPLETE; website portrait candidates were inconclusive as exact final assets.
+- SR-3 Per-layer classification — COMPLETE, now amended for portrait.
+- SR-4 Decomposition-plan approval — PASS, now amended for portrait.
+- ARC-1 Architecture checkpoint — PASS WITH MINIMAL ARCHITECTURE ADDITION.
+- EX-0 Deterministic master-pixel extraction engine — COMPLETE.
 
-### M2 — Structure
+EX-0 accepted commits:
 
-- 2A — Verify source + editable frames — PASS
-- 2B — Verify top-level groups — PASS
-- 2C — Verify locked master reference — PASS
-- 2D — Audit internal production structure — PASS
-- 2E — Full-resolution structure QA — PASS WITH FINDING
+- `1c3767561d39f503fc41cdc3eb804d31099fbb67`
+- `e2e433f848b7e83cfc86ca9a1ec9b7c6e30989d2`
 
-### M3 — Background / source strategy
+Accepted EX-0 validation: 17 full tests passed, 6 extraction tests passed, synthetic smoke PASS, RGB mismatches 0, alpha mismatches 0, source unchanged true, `git diff --check` PASS.
 
-- 3A — Define exact removal geometry — PASS
-- 3A.1 — Remove unapproved wall cleanup patches — PASS
-- 3B.0 — Canonical clean-plate contract + repo bootstrap — COMPLETE
-- 3B.1 — Deterministic clean-plate engine — COMPLETE as reusable fallback subsystem
-- SR-1 — Source asset inventory — COMPLETE
-- SR-2 — Provenance / exact-match verification — COMPLETE; portrait candidates INCONCLUSIVE
-- SR-3 — Per-layer decomposition classification — COMPLETE
-- SR-4 — Decomposition-plan approval — PASS
-- ARC-1 — Post-SR architecture checkpoint — PASS WITH MINIMAL ARCHITECTURE ADDITION
-- EX-0 — Deterministic master-pixel extraction engine — COMPLETE
-- 3B.2 — Generate DIRECTV portrait clean-plate candidate — PAUSED until a target-specific trustworthy mask and all clean-plate prerequisites are validated
+## Approved DIRECTV geometry
 
-### Corrective findings
+All coordinates are relative to the `1586 × 992` master.
 
-- The initial 3B.2 GrabCut portrait-mask candidate failed human visual review and is REJECTED.
-- The failed GrabCut mask remains unapproved and must not be promoted or used for production reconstruction.
-- A later portrait overlay was visually promising, but artifact existence and visual promise do not constitute production-mask approval.
-- A semantic-segmentation replacement is not automatically authorized merely because source recovery was inconclusive.
-- The architectural error was treating clean-plate reconstruction as the default path before proving source recovery was insufficient.
-- 3B.1 remains valid infrastructure; its role is fallback reconstruction only.
+Portrait:
+- core: `x=620 y=78 w=382 h=717`
+- surrounding QA/reconstruction zone: `x=596 y=54 w=430 h=765`
 
-## Approved DIRECTV removal geometry
+TV:
+- core: `x=913 y=413 w=544 h=397`
+- zone: `x=889 y=389 w=592 h=445`
 
-All coordinates are relative to the 1586 × 992 master.
+Phone:
+- core: `x=791 y=532 w=132 h=280`
+- zone: `x=767 y=508 w=180 h=328`
 
-These bounds are reconstruction limits only. They do not, by themselves, authorize reconstruction.
+Wall slogan:
+- core: `x=1044 y=190 w=145 h=135`
+- zone: `x=1020 y=166 w=193 h=183`
 
-### Portrait
+Wall underline:
+- core: `x=1060 y=338 w=62 h=5`
+- zone: `x=1036 y=314 w=110 h=53`
 
-Core: `x=620 y=78 w=382 h=717`
+These are limits/placement references, not blanket authorization to rewrite pixels.
 
-Approved reconstruction zone: `x=596 y=54 w=430 h=765`
+## Cumulative background cleanup rule
 
-Halo: `24 px`
-
-### TV
-
-Core: `x=913 y=413 w=544 h=397`
-
-Approved reconstruction zone: `x=889 y=389 w=592 h=445`
-
-### Phone
-
-Core: `x=791 y=532 w=132 h=280`
-
-Approved reconstruction zone: `x=767 y=508 w=180 h=328`
-
-### Wall slogan
-
-Core: `x=1044 y=190 w=145 h=135`
-
-Approved reconstruction zone: `x=1020 y=166 w=193 h=183`
-
-### Wall underline
-
-Core: `x=1060 y=338 w=62 h=5`
-
-Approved reconstruction zone: `x=1036 y=314 w=110 h=53`
-
-## Cumulative cleanup rule
-
-When reconstruction stages are actually authorized, cleanup is cumulative:
+Background cleanup remains cumulative once authorized:
 
 `Portrait → TV → Phone → Wall slogan → Wall underline`
 
-Later reconstruction stages consume the approved output of the prior authorized reconstruction stage. Do not generate unrelated independent patches from the original master and stack them.
+The portrait stage now consumes approved portrait occupancy derived from the approved standalone portrait asset, not a pre-rebuild segmentation mask.
 
-Source recovery or extraction may eliminate some reconstruction work entirely.
+## Portrait rebuild QA
 
-## Automated QA requirements
+`docs/DIRECTV_PORTRAIT_REBUILD_CONTRACT.md` governs the next stage.
 
-For any authorized reconstruction stage, at minimum:
+At minimum it requires:
 
-- validate manifest schema
-- validate canvas dimensions
-- validate bounds
-- validate masks
-- prove zero changed pixels outside the approved reconstruction zone
-- output dimensions equal source dimensions
-- emit candidate image
-- emit preview image
-- emit difference image
-- emit unchanged-region diff
-- emit machine-readable report
-- exit non-zero on failed automated gate
-- human gate remains `PENDING` until reviewed
+- recorded website portrait source candidate and SHA;
+- pinned source repository commit;
+- immutable master hash before/after;
+- complete standalone RGBA portrait;
+- deterministic placement;
+- visible-region comparison against immutable master;
+- hidden-region designation limited to TV/phone occlusion;
+- candidate/overlay/diff/alpha/report artifacts;
+- automated gate;
+- human gate `PENDING` until review;
+- no Figma mutation before approval.
 
-For `EXTRACT_FROM_MASTER`, the extraction engine must prove exact immutable-master RGB preservation wherever extraction alpha is non-zero and transparent/non-participating pixels outside the extraction mask.
+## Clean-plate QA
 
-## Development environment status
+For any later authorized background reconstruction stage:
 
-- DEV-1A — Verify Git / Python 3.12 / GitHub CLI / VS Code — PASS
-- DEV-1B — Authenticate GitHub CLI — PASS
-- CONT-1 — Create ChatGPT Project — PASS
-- CONT-2 — Move active conversation into project — PASS
-- CONT-3 — Add ChatGPT Project instructions — PASS
-- CONT-4A — Canonical GitHub continuity file — PASS
-- CONT-4B — Notion mirror/index — PASS
-- CONT-4C — ChatGPT Project continuity pointer/update — PASS
-- DEV-2 — Create local Development folder — PASS (`/Users/jimmarkunas/Development`)
-- DEV-3 — Clone repository — PASS
-- WS-1 / WS-2 — Repository isolation + repo-local `AGENTS.md` guardrails — PASS
-- WS-4 — Repository-root / branch / clean-tree preflight — PASS
-- DEV-4 — Sync/switch local and remote `feature/3b1-clean-plate-engine` to current protected baseline — PASS
-- DEV-5 / WS-3 — Repository-local Python `.venv` using Python 3.12 — PASS (`Python 3.12.14`; recreated after repo relocation and verified at the new path)
-- DEV-6 — Integrate repository into the shared multi-root VS Code / AI development environment while preserving repo-local execution boundaries — PASS
-- DEV-7 — Add immutable DIRECTV master locally — PASS
-- DEV-8 — Validate local environment — PASS
+- validate manifest schema;
+- validate canvas dimensions/bounds/masks;
+- prove zero changed pixels outside the approved reconstruction zone;
+- output dimensions equal source dimensions;
+- emit candidate, preview, difference, unchanged-region diff, and report;
+- fail closed/non-zero on failed automated gate;
+- human gate remains `PENDING` until reviewed.
 
-## Workspace isolation rule
+## Workspace isolation
 
-The shared VS Code environment may contain multiple sibling repositories, but this project must treat only `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer` as its writable project root. `/Users/jimmarkunas/Development/Jim` and `~/Development` are workspace/container directories only and must not become Git repositories or shared mutation roots. Repo-local `AGENTS.md` defines mandatory agent preflight and cross-repository boundaries. Shared extensions and MCP availability may live at the VS Code environment/profile level; Git state, dependencies, Python environments, project guardrails, and execution remain repository-local.
+Only `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer` is the writable project root. Parent development folders are containers only and must not become shared mutation roots. Repo-local `AGENTS.md` remains mandatory.
 
-## Corrected pipeline roadmap
+Generated evidence under `runs/` is local evidence and should not be committed.
+
+## Current roadmap
 
 - M2 — Structure — COMPLETE
-- 3A — Removal geometry — PASS
-- 3A.1 — Remove unapproved wall patches — PASS
-- 3B.0 — Clean-plate contract + repo bootstrap — COMPLETE
-- 3B.1 — Deterministic clean-plate engine — COMPLETE as fallback infrastructure
-- SR-1 — Source asset inventory — COMPLETE
-- SR-2 — Provenance / exact-match verification — COMPLETE
-- SR-3 — Per-layer decomposition classification — COMPLETE
-- SR-4 — Decomposition-plan approval gate — PASS
-- ARC-1 — Post-SR architecture checkpoint — PASS WITH MINIMAL ARCHITECTURE ADDITION
-- EX-0 — Deterministic master-pixel extraction engine — COMPLETE
-- **3B.2A — Validate and promote a trustworthy DIRECTV portrait reconstruction mask — NEXT**
-- 3B.2 — Generate DIRECTV portrait clean-plate candidate — only after 3B.2A passes
+- 3A / 3A.1 — geometry / patch correction — PASS
+- 3B.0 / 3B.1 — clean-plate contract + engine — COMPLETE
+- SR-1–SR-4 — COMPLETE, portrait classification amended
+- ARC-1 — COMPLETE
+- EX-0 — COMPLETE
+- **PR-1 — Produce one source-guided complete DIRECTV portrait candidate — NEXT**
+- PR-2 — Automated alignment + visible-region fidelity QA
+- PR-3 — Human visual QA of standalone portrait + recomposed view
+- PR-4 — Promote approved portrait asset / derive occupancy alpha
+- 3B.2 — Generate portrait-exposed background clean-plate candidate using approved portrait occupancy
 - 3B.3 — Automated unchanged-region QA
-- 3B.4 — Human visual QA
-- 3B.5 — Push approved clean plate into Figma
-- 3C — TV removal — only if reconstruction remains necessary after extraction/source decisions
-- 3D — Phone removal — only if reconstruction remains necessary after extraction/source decisions
-- 3E — Wall slogan removal/native rebuild according to approved classification
-- 3F — Wall underline removal/native rebuild according to approved classification
-- 3G — Full clean-background QA
-- 3H — Final approved background
-- 4A–4F — Portrait extraction + QA according to `EXTRACT_FROM_MASTER`
-- 5A–5I — Device extraction + QA according to `EXTRACT_FROM_MASTER`
-- DEP-1 — Deterministic dependency lock/pinning — complete before P1 generalization; pin/lock raster-processing/runtime dependencies for reproducible output
-- P1–P4 — Generalize and package for mock-ups #2–#6, preserving the source-first gate
+- 3B.4 — Human background QA
+- 3B.5 — Promote approved portrait-stage clean background into Figma only after gates pass
+- 3C — TV removal/background reconstruction as still required
+- 3D — Phone removal/background reconstruction as still required
+- 3E / 3F — wall slogan/underline native rebuild and any required background cleanup
+- 3G / 3H — full clean-background QA / final approved background
+- 5A–5I — device extraction + QA
+- native header/copy/metrics/process/signature rebuilds
+- full recomposition QA
+- Figma promotion
+- DEP-1 dependency pinning before P1 generalization
+- P1–P4 generalize/package for mock-ups #2–#6
 
 ## Current next step
 
-`3B.2A — Validate and promote a trustworthy DIRECTV portrait reconstruction mask.`
+`PR-1 — Produce exactly one source-guided complete DIRECTV portrait candidate under docs/DIRECTV_PORTRAIT_REBUILD_CONTRACT.md.`
 
-Use existing successful portrait-overlay evidence as a candidate input if available, but do not infer approval from its existence. Validate exact mask geometry against the immutable master, foreground exclusions, approved reconstruction zone, and human visual acceptance before any clean-plate candidate run.
-
-Do not perform 3B.2 reconstruction, production extraction, or Figma mutation until 3B.2A passes.
+Do not run another portrait segmentation/removal-mask strategy. Do not run clean-plate reconstruction yet. Do not mutate Figma yet.
 
 ## Continuity protocol
 
-At the start of any new ChatGPT or Codex session:
+At the start of every ChatGPT/Codex session:
 
-1. Read `docs/PROJECT_CANON.md` from `main`; if active work exists only on an accepted feature branch, also read the feature-branch canon and the relevant issue/PR.
-2. Read `README.md`.
-3. Read `docs/SOURCE_ASSET_RECOVERY.md` before any extraction or reconstruction decision.
-4. Read `docs/DIRECTV_DECOMPOSITION_PLAN.md` for the approved DIRECTV per-layer classification.
-5. Read `docs/ARC_1_ARCHITECTURE_CHECKPOINT.md` before changing package boundaries.
-6. Read `docs/CLEAN_PLATE_CONTRACT.md` only when a layer has been authorized for reconstruction.
-7. Confirm current Git root, branch, working-tree status, issue, and roadmap before editing.
-8. Perform one bounded operation, validate it, then stop.
+1. Read `docs/PROJECT_CANON.md` from `main` first.
+2. Read the active feature-branch canon if accepted work is ahead of `main`.
+3. Read `docs/SOURCE_ASSET_RECOVERY.md` before extraction/reconstruction decisions.
+4. Read the target-specific contract for the active stage.
+5. Confirm Git root, branch, working-tree status, issue/roadmap state.
+6. Perform one bounded operation, validate it, then stop.
 
-Update this file whenever the accepted roadmap state, next step, canonical coordinates, source-recovery state, architecture checkpoint state, dependency reproducibility state, or source-of-truth locations materially change.
+Update this file whenever accepted roadmap state, next step, classification, geometry, architecture, or source-of-truth locations materially change.
