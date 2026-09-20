@@ -1,0 +1,38 @@
+{
+  "plan_version": "0.1.0",
+  "status": "SR-3_COMPLETE_SR-4_PENDING",
+  "mockup_id": "directv-hero-01",
+  "canvas": {"width": 1586, "height": 992},
+  "source_evidence": {
+    "master_sha256": "d5a66264cc44c449f0e29d045d729c81fe51564b768b371fd9544b34b60f22e6",
+    "sr1": "No standalone background, TV, phone, or screen source recovered; Figma raster children are full-canvas master-pixel views under masks.",
+    "sr2": {
+      "repository": "jimmarkunas/portfolio",
+      "commit_sha": "5af5f3191cdbd26cef48d3290fa1e979b04f0a73",
+      "result": "INCONCLUSIVE",
+      "evidence_dir": "runs/directv-sr2-portrait-20260920T063917Z/"
+    }
+  },
+  "layers": [
+    {"name":"background_environment","classification":"RECONSTRUCT_HIDDEN_PIXELS","source_status":"No standalone original recovered; visible pixels remain in master","bounds":null,"mask_required":true,"hidden_reconstruction_required":"candidate_only_for_pixels_exposed_by_approved_foreground_removal","destination_group":"01_BACKGROUND","confidence":"MEDIUM","review_status":"SR-4_PENDING","risks":["requires explicit SR-4 authorization","must preserve visible master pixels"]},
+    {"name":"portrait","classification":"EXTRACT_FROM_MASTER","source_status":"Portfolio candidates found; SR-2 inconclusive; Figma portrait is masked master pixels","bounds":{"x":620,"y":78,"width":382,"height":717},"mask_required":true,"hidden_reconstruction_required":"separate_background_only","destination_group":"02_PORTRAIT","confidence":"HIGH","review_status":"SR-4_PENDING","risks":["source provenance unresolved","preserve TV/phone/UI overlaps"]},
+    {"name":"tv_hardware","classification":"EXTRACT_FROM_MASTER","source_status":"No standalone source; Figma node 246:12 is full-canvas master pixels under a mask","bounds":{"x":913,"y":413,"width":544,"height":397},"mask_required":true,"hidden_reconstruction_required":"separate_background_only","destination_group":"03_DEVICES","confidence":"HIGH","review_status":"SR-4_PENDING","risks":["mask boundary QA required"]},
+    {"name":"tv_screen_content","classification":"EXTRACT_FROM_MASTER","source_status":"No standalone source; Figma node 246:15 is full-canvas master pixels under a mask","bounds":null,"mask_required":true,"hidden_reconstruction_required":"separate_background_only","destination_group":"03_DEVICES","confidence":"MEDIUM","review_status":"SR-4_PENDING","risks":["exact sub-bounds require audit"]},
+    {"name":"phone_hardware","classification":"EXTRACT_FROM_MASTER","source_status":"No standalone source; Figma node 246:18 is full-canvas master pixels under a mask","bounds":{"x":791,"y":532,"width":132,"height":280},"mask_required":true,"hidden_reconstruction_required":"separate_background_only","destination_group":"03_DEVICES","confidence":"HIGH","review_status":"SR-4_PENDING","risks":["preserve during portrait stage"]},
+    {"name":"phone_screen_content","classification":"EXTRACT_FROM_MASTER","source_status":"No standalone source; Figma node 246:21 is full-canvas master pixels under a mask","bounds":null,"mask_required":true,"hidden_reconstruction_required":"separate_background_only","destination_group":"03_DEVICES","confidence":"MEDIUM","review_status":"SR-4_PENDING","risks":["exact sub-bounds require audit"]},
+    {"name":"header_navigation","classification":"REBUILD_NATIVE","source_status":"Native text/UI/vector intended to be editable","bounds":null,"mask_required":false,"hidden_reconstruction_required":"no","destination_group":"04_HEADER","confidence":"HIGH","review_status":"SR-4_PENDING","risks":["native typography QA"]},
+    {"name":"hero_copy_cta","classification":"REBUILD_NATIVE","source_status":"Native typography and CTA/UI","bounds":null,"mask_required":false,"hidden_reconstruction_required":"no","destination_group":"05_HERO_COPY","confidence":"HIGH","review_status":"SR-4_PENDING","risks":["preserve copy and overlap semantics"]},
+    {"name":"metrics","classification":"REBUILD_NATIVE","source_status":"Native metric text and dividers","bounds":null,"mask_required":false,"hidden_reconstruction_required":"no","destination_group":"06_METRICS","confidence":"HIGH","review_status":"SR-4_PENDING","risks":["numeric typography QA"]},
+    {"name":"wall_slogan","classification":"REBUILD_NATIVE","source_status":"Native typography","bounds":{"x":1044,"y":190,"width":145,"height":135},"mask_required":false,"hidden_reconstruction_required":"no","destination_group":"07_WALL_MESSAGE","confidence":"HIGH","review_status":"SR-4_PENDING","risks":["overlap with raster layers"]},
+    {"name":"wall_underline","classification":"REBUILD_NATIVE","source_status":"Native vector/divider","bounds":{"x":1060,"y":338,"width":62,"height":5},"mask_required":false,"hidden_reconstruction_required":"no","destination_group":"07_WALL_MESSAGE","confidence":"HIGH","review_status":"SR-4_PENDING","risks":["exact stroke placement"]},
+    {"name":"process_strip","classification":"REBUILD_NATIVE","source_status":"Native icons, labels, arrows, and dividers where possible","bounds":null,"mask_required":false,"hidden_reconstruction_required":"no","destination_group":"08_PROCESS_STRIP","confidence":"MEDIUM","review_status":"SR-4_PENDING","risks":["icon/vector audit required"]},
+    {"name":"bottom_signature","classification":"REBUILD_NATIVE","source_status":"Native text and accent line","bounds":null,"mask_required":false,"hidden_reconstruction_required":"no","destination_group":"09_BOTTOM_SIGNATURE","confidence":"MEDIUM","review_status":"SR-4_PENDING","risks":["typography and line placement QA"]}
+  ],
+  "sr4_checklist": [
+    "Review every classification",
+    "Confirm visible background remains exact master pixels",
+    "Decide whether hidden-pixel reconstruction is genuinely necessary",
+    "Record reconstruction authorization, masks, exclusions, and QA gates if applicable",
+    "Approve or reject this plan before production work"
+  ]
+}
