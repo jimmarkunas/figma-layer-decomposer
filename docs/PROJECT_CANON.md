@@ -46,6 +46,7 @@ Turn approved flat mock-up PNGs into genuinely editable layered Figma compositio
 - Current implementation branch: `feature/3b2-directv-portrait-candidate`
 - Current implementation issue: `#4 — 3B.2 — Generate DIRECTV portrait clean-plate candidate` — PAUSED until target-specific reconstruction prerequisites are satisfied
 - Completed source-recovery issue: `#5 — SR-1–SR-4 — Source asset recovery and decomposition gate`
+- Completed extraction-engine issue: `#7 — EX-0 — Deterministic master-pixel extraction engine`
 - Completed implementation issue: `#1 — 3B.1 — Implement deterministic clean-plate pipeline`
 - Local repository path: `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer`
 - Product status: standalone product inside the shared Jim development workspace.
@@ -135,6 +136,24 @@ Approved architecture changes:
 7. Do not expand `schema/layer-manifest.schema.json` unless EX-0 proves a concrete missing field or invariant; it already supports `raster_extract` and `screen_extract`.
 8. Native Figma rebuild remains outside the Python raster engine.
 
+## EX-0 extraction engine
+
+EX-0 is COMPLETE.
+
+- `extract/` provides deterministic `EXTRACT_FROM_MASTER` execution for `raster_extract` and `screen_extract` targets.
+- Output is bounded RGBA using deterministic Figma placement bounds.
+- Participating RGB pixels are exact immutable-master pixels.
+- Alpha values are preserved exactly, including intermediate alpha.
+- Source immutability is verified by SHA-256 before/after execution.
+- `decomposer/primitives.py` is the approved minimal shared seam for bounds, hashing, manifest validation, RGB loading, mask loading, and bounds validation.
+- `cleanplate` remains reconstruction-only; extraction does not depend on `cleanplate` internals.
+- No production DIRECTV extraction was performed during EX-0.
+
+Accepted implementation commits:
+
+- `1c3767561d39f503fc41cdc3eb804d31099fbb67` — extraction engine
+- `e2e433f848b7e83cfc86ca9a1ec9b7c6e30989d2` — isolate shared decomposition primitives
+
 Before P1 generalization, add a reproducibility checkpoint that pins/locks runtime dependencies used for deterministic raster output. The lock/pin must cover at least Pillow, NumPy, OpenCV, and jsonschema, and must not interrupt the current DIRECTV proof unless a version mismatch is actively causing non-deterministic behavior.
 
 ## Completed work
@@ -158,6 +177,7 @@ Before P1 generalization, add a reproducibility checkpoint that pins/locks runti
 - SR-3 — Per-layer decomposition classification — COMPLETE
 - SR-4 — Decomposition-plan approval — PASS
 - ARC-1 — Post-SR architecture checkpoint — PASS WITH MINIMAL ARCHITECTURE ADDITION
+- EX-0 — Deterministic master-pixel extraction engine — COMPLETE
 - 3B.2 — Generate DIRECTV portrait clean-plate candidate — PAUSED until a target-specific trustworthy mask and all clean-plate prerequisites are validated
 
 ### Corrective findings
@@ -235,7 +255,7 @@ For any authorized reconstruction stage, at minimum:
 - exit non-zero on failed automated gate
 - human gate remains `PENDING` until reviewed
 
-For `EXTRACT_FROM_MASTER`, EX-0 must additionally prove exact immutable-master RGB preservation wherever extraction alpha is non-zero and transparent/non-participating pixels outside the extraction mask.
+For `EXTRACT_FROM_MASTER`, the extraction engine must prove exact immutable-master RGB preservation wherever extraction alpha is non-zero and transparent/non-participating pixels outside the extraction mask.
 
 ## Development environment status
 
@@ -273,8 +293,9 @@ The shared VS Code environment may contain multiple sibling repositories, but th
 - SR-3 — Per-layer decomposition classification — COMPLETE
 - SR-4 — Decomposition-plan approval gate — PASS
 - ARC-1 — Post-SR architecture checkpoint — PASS WITH MINIMAL ARCHITECTURE ADDITION
-- **EX-0 — Deterministic master-pixel extraction engine — NEXT**
-- 3B.2 — Generate DIRECTV portrait clean-plate candidate — resume only after its target-specific trustworthy mask and clean-plate prerequisites are validated
+- EX-0 — Deterministic master-pixel extraction engine — COMPLETE
+- **3B.2A — Validate and promote a trustworthy DIRECTV portrait reconstruction mask — NEXT**
+- 3B.2 — Generate DIRECTV portrait clean-plate candidate — only after 3B.2A passes
 - 3B.3 — Automated unchanged-region QA
 - 3B.4 — Human visual QA
 - 3B.5 — Push approved clean plate into Figma
@@ -291,9 +312,11 @@ The shared VS Code environment may contain multiple sibling repositories, but th
 
 ## Current next step
 
-`EX-0 — Implement the deterministic master-pixel extraction engine with only the minimal shared-primitives seam approved by ARC-1.`
+`3B.2A — Validate and promote a trustworthy DIRECTV portrait reconstruction mask.`
 
-Do not perform production portrait/device extraction, hidden-pixel reconstruction, or Figma mutation inside EX-0.
+Use existing successful portrait-overlay evidence as a candidate input if available, but do not infer approval from its existence. Validate exact mask geometry against the immutable master, foreground exclusions, approved reconstruction zone, and human visual acceptance before any clean-plate candidate run.
+
+Do not perform 3B.2 reconstruction, production extraction, or Figma mutation until 3B.2A passes.
 
 ## Continuity protocol
 
