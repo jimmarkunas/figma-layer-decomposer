@@ -10,9 +10,10 @@ dependencies = ["Pillow", "numpy", "opencv-python-headless", "jsonschema"]
 
 [project.scripts]
 clean-plate = "cleanplate.cli:main"
+extract-master = "extract.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
 [tool.setuptools.packages.find]
-include = ["cleanplate*"]
+include = ["cleanplate*", "extract*"]
