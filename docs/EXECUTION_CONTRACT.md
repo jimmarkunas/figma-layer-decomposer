@@ -27,6 +27,22 @@ If the requested method is unavailable, denied, or conflicts with the contract, 
 
 Never substitute a different tool, model, source, mask, transformation, reconstruction strategy, or number of candidates without an explicitly amended contract.
 
+## Input model
+
+Execution-contract inputs are intentionally generic.
+
+The `inputs` object may contain any number of arbitrarily named input assets, provided each asset declares at minimum:
+
+- `path`;
+- exact `sha256`;
+- optional descriptive `role`.
+
+Examples of valid input names include `source`, `master`, `identity_source`, `clothing_reference`, `approved_previous_stage`, or any future domain-specific name.
+
+The guard does not hard-code DIRECTV-specific input names. It validates and hashes every named input present in the contract.
+
+Changing an input path or SHA-256 creates a different execution state. Do not silently replace inputs inside an already-executed contract and treat the result as the same operation. Use a new operation ID or an explicitly versioned contract revision so provenance remains reproducible.
+
 ## Operation classes
 
 ### `EXACT_EDIT`
