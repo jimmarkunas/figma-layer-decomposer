@@ -4,7 +4,7 @@ Deterministic production pipeline for turning an approved flat mock-up PNG into 
 
 The project exists to preserve the visual fidelity of an immutable master image while making selected elements independently editable or replaceable.
 
-It is also the recovery/reconstruction front-end for a broader reusable-template workflow: **approved concept image → editable Figma reconstruction → promoted Personal Brand template → React / PowerPoint presentation outputs**. The decomposer does not replace the canonical Jim Markunas Personal Brand design system; accepted reusable templates are promoted into that existing Figma authority.
+It is the recovery/reconstruction front-end for a broader reusable-template workflow: **approved concept image → editable Figma reconstruction → `PROMOTION_READY` → Personal Brand Design System promotion → React / PowerPoint presentation outputs**. The decomposer does not own the downstream Personal Brand template system; that ownership transfers to Personal Career Brand / PBDS inside LIFE OS after the handoff boundary.
 
 ## Core principle
 
@@ -23,7 +23,8 @@ This repository owns:
 - pixel-diff / SSIM QA
 - Figma placement manifests
 - reproducible outputs for multiple mock-ups
-- the proof that an accepted reconstruction can be promoted into a reusable Personal Brand template
+- editable staging reconstruction
+- the bounded `PROMOTION_READY` handoff package
 
 This repository does **not** own:
 
@@ -33,23 +34,30 @@ This repository does **not** own:
 - silently modifying pixels outside an approved reconstruction zone
 - final human visual approval
 - a second permanent Personal Brand design system or template library
+- canonical reusable-template promotion after `PROMOTION_READY`
+- the final semantic template/content contract
+- React presentation rendering
+- PowerPoint presentation rendering
 - speculative generic Figma-to-code, template-registry, renderer, or bidirectional-sync infrastructure
 
 Native Figma text, buttons, navigation, vectors, and components are reconstructed separately after the decomposition plan classifies them `REBUILD_NATIVE`.
 
-## Business-case gate
+## Promotion handoff
 
-DIRECTV is the reference reconstruction. Before the project generalizes through mock-ups #2–#6, it must prove that the accepted DIRECTV composition can become a **reusable template**, not merely an editable one-off reconstruction.
+DIRECTV is the reference reconstruction. The decomposer completes `DTV-FINAL`, then emits a bounded `PROMOTION_READY` package according to [`docs/PROMOTION_HANDOFF_CONTRACT.md`](docs/PROMOTION_HANDOFF_CONTRACT.md).
 
-That proof must demonstrate:
+After that point, Personal Career Brand / PBDS-4 owns:
 
-- promotion into the existing canonical Jim Markunas Personal Brand Figma library
-- a second, non-DIRECTV variation produced by substituting content/media without rebuilding the layout
-- one bounded semantic template/content contract
-- one React presentation slide populated from that contract
-- one PowerPoint slide populated from the same contract, with editable text and replaceable media where practical
+- promotion into the canonical `JM-Personal-Brand` Figma library
+- reusable template/component definition
+- semantic template/content contract
+- a non-source variation proof
+- one React presentation slide from that contract
+- one editable PowerPoint slide from the same contract
 
-A flattened screenshot-only PowerPoint does not satisfy the proof. See `docs/PROJECT_CANON.md` for the authoritative `TP-1 — Template Promotion & Consumption Proof` contract.
+A flattened screenshot-only PowerPoint does not satisfy PBDS acceptance, but that proof is owned by PBDS rather than this repository.
+
+Broad decomposition generalization to mock-ups #2–#6 is blocked until PBDS-4 proves at least one accepted reconstruction can become a genuinely reusable cross-renderer template.
 
 ## Source-first decomposition pipeline
 
@@ -103,14 +111,16 @@ Figma placement from manifest
 Accepted editable reconstruction
                     |
                     v
-Template promotion proof
-  - canonical Personal Brand Figma library
+PROMOTION_READY handoff
+                    |
+                    v
+PBDS ownership
+  - canonical Personal Brand Figma promotion
   - semantic content contract
-  - React slide
-  - editable PowerPoint slide
+  - React / PowerPoint consumption
 ```
 
-See [`docs/SOURCE_ASSET_RECOVERY.md`](docs/SOURCE_ASSET_RECOVERY.md) for the mandatory source-recovery gate and [`docs/CLEAN_PLATE_CONTRACT.md`](docs/CLEAN_PLATE_CONTRACT.md) for fallback reconstruction once a layer is explicitly authorized.
+See [`docs/SOURCE_ASSET_RECOVERY.md`](docs/SOURCE_ASSET_RECOVERY.md) for the mandatory source-recovery gate, [`docs/CLEAN_PLATE_CONTRACT.md`](docs/CLEAN_PLATE_CONTRACT.md) for fallback reconstruction once a layer is explicitly authorized, and [`docs/PROMOTION_HANDOFF_CONTRACT.md`](docs/PROMOTION_HANDOFF_CONTRACT.md) for the cross-system ownership boundary.
 
 ## Non-negotiable guardrails
 
@@ -121,12 +131,13 @@ See [`docs/SOURCE_ASSET_RECOVERY.md`](docs/SOURCE_ASSET_RECOVERY.md) for the man
 5. Pixels outside an authorized reconstruction mask/halo must remain byte-equivalent to the source after normalization to the same color mode.
 6. Every generated raster asset must have a machine-readable placement record.
 7. A later stage may not repair a failed earlier stage.
-8. No Figma upload occurs until automated QA and human visual QA pass.
+8. No Figma upload or promotion-readiness claim occurs until automated QA and human visual QA pass.
 9. Existing approved mock-ups are reference material, not prompts for reinterpretation.
 10. Every run must be reproducible from inputs + manifest + pipeline version.
 11. If source strategy is unresolved, stop `BLOCKED` rather than increasing fallback-tool complexity.
-12. The reconstruction workspace must not become a second permanent Personal Brand design system; reusable templates promote into the existing canonical Figma library.
-13. Do not generalize through additional mock-ups until the DIRECTV template-promotion business case is proven.
+12. The reconstruction workspace must not become a second permanent Personal Brand design system; reusable templates promote into the existing canonical Figma library under PBDS ownership.
+13. Do not implement semantic-contract, React-renderer, or PowerPoint-renderer work inside this repository after `PROMOTION_READY`.
+14. Do not generalize through additional mock-ups until the PBDS-4 reusable-template proof is accepted.
 
 ## Current reference mock-up
 
@@ -204,7 +215,7 @@ output/<mockup-id>/
 └── figma-manifest.json
 ```
 
-The exact reusable-template semantic schema is intentionally **not** added to this output structure yet. `TP-1` will define the smallest schema actually required after the DIRECTV reconstruction is accepted.
+The reusable-template semantic schema is deliberately **not** part of this repository's output contract. The handoff may describe semantic-candidate roles; PBDS defines the final template/content contract after promotion.
 
 ## Roadmap
 
@@ -236,26 +247,16 @@ Complete.
 - 4A–4F — portrait recovery/extraction + QA according to SR classification
 - 5A–5I — device recovery/extraction + QA according to SR classification
 - DTV-FINAL — complete editable DIRECTV reconstruction + full-frame 1:1 visual acceptance
-
-### TP-1 — Template Promotion & Consumption Proof
-
-After `DTV-FINAL` and before broader generalization:
-
-- promote the accepted DIRECTV reconstruction into the canonical Personal Brand Figma library
-- create a non-DIRECTV variant through content/media substitution rather than layout reconstruction
-- define the minimum semantic template/content contract
-- render one React presentation slide from that contract
-- render one editable PowerPoint slide from that same contract
-- visually validate the three outputs against the approved template
+- HANDOFF-1 — emit accepted `PROMOTION_READY` package to Personal Career Brand / PBDS-4
 
 ### Reusable pipeline
 
-Only after TP-1 is accepted:
+Only after PBDS-4 accepts the reusable-template/consumption proof:
 
 - lock/pin deterministic raster dependencies before broad generalization
 - generalize for mock-ups #2–#6
 - preserve the source-first gate, schema, and SOP
-- treat each additional mock-up as a candidate reusable Personal Brand template, not decomposition-only output
-- automate Figma placement from manifest where the proven mechanics justify it
-- extract shared template/rendering primitives only after real repeated consumers demonstrate the need
-- package the proven mechanics as a reusable project/tool without creating a second design system
+- treat each additional mock-up as a candidate `PROMOTION_READY` handoff, not a Decomposer-owned permanent template
+- automate Figma placement from manifest where proven mechanics justify it
+- extract shared decomposition primitives only after real repeated consumers demonstrate the need
+- package the proven reconstruction mechanics without creating a second design system
