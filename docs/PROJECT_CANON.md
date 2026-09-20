@@ -106,17 +106,53 @@ Structured mirror: `examples/directv/decomposition-plan.json`.
 
 Earlier portrait classification `EXTRACT_FROM_MASTER` is superseded.
 
-New user-supplied provenance establishes that the DIRECTV portrait was derived from the user's website portrait. SR-2 had only shown that the website candidates were not provably the exact final standalone DIRECTV asset; it did not mean they were unrelated.
+User-supplied provenance establishes that the DIRECTV portrait was derived from the user's website portrait. SR-2 showed only that the website candidates were not provably the exact final standalone DIRECTV asset; it did not mean they were unrelated.
 
 Extraction is insufficient because TV/phone occlusion hides part of the portrait. A crop from the master cannot produce the complete independent portrait layer required by the product.
 
-Therefore the portrait is now `REBUILD_RASTER_FROM_SOURCE` under `docs/DIRECTV_PORTRAIT_REBUILD_CONTRACT.md`.
+Therefore the portrait remains `REBUILD_RASTER_FROM_SOURCE`.
 
-The standalone portrait must be rebuilt from the website portrait source relationship while the immutable DIRECTV master remains the exact visual target for visible identity, pose, crop, clothing treatment, lighting, and placement.
-
-New portrait content is allowed only where the standalone portrait is hidden by TV/phone occlusion in the master. Visible target appearance must pass comparison against the master.
+The immutable DIRECTV master remains the exact visual target for visible identity, pose, crop, clothing treatment, lighting, and placement. Newly reconstructed portrait content is allowed only where the complete standalone portrait is hidden by TV/phone occlusion.
 
 After human approval, portrait occupancy/alpha is derived from the approved rebuilt portrait itself. Do not generate another portrait-removal mask first.
+
+## PR-1 deterministic rebuild result — FAIL
+
+PR-1 attempted exactly one deterministic source-guided standalone portrait candidate using affine scale/translation from the website portrait.
+
+Recorded result:
+
+- source: `hero-jim-01-cutout-v2.png`
+- source SHA-256: `06294961581f4fd3a0b08dae8af3eacf7c05e2efb3d61fe72fb517abe2995100`
+- candidate SHA-256: `00957d6b3d12fa1ac590e2737f2a21cfe8619d7711e06e76e063cd5354221ea5`
+- transform: scale `0.2046033889`, translation `(528.4569, 9.2964)`, rotation `0°`, Pillow BILINEAR affine
+- alpha bbox: `x=635 y=71 width=578 height=557`
+- visible pixels compared: `87959`
+- visible mismatches: `40395`
+- mean absolute error: `30.34`
+- max error: `249`
+- master unchanged: `true`
+- automated gate: `FAIL`
+- human gate: `PENDING`
+- promotion status: `NOT_PROMOTED`
+- evidence: `runs/directv-portrait-rebuild-20260920T082824Z/`
+
+Conclusion: the website portrait is a valid related source, but simple deterministic affine alignment is not sufficient to reproduce the approved DIRECTV portrait. Do not iterate affine tweaks, source-candidate bake-offs, or another deterministic alignment loop.
+
+## PR-1B source-guided portrait reconstruction
+
+PR-1B is the next authorized portrait stage under `docs/DIRECTV_PORTRAIT_SOURCE_GUIDED_RECONSTRUCTION_CONTRACT.md`.
+
+PR-1B must produce exactly one complete standalone RGBA portrait by using:
+
+1. `hero-jim-01-cutout-v2.png` as the pinned identity/source reference;
+2. the immutable DIRECTV master as the exact visible appearance target.
+
+The reconstruction may synthesize portrait content only where TV/phone occlusion hides the required standalone portrait. The visible face, hair, pose, crop, jacket/clothing treatment, lighting, scale, and placement must remain constrained to the approved master.
+
+PR-1B is not permission to redesign the portrait, generate background, alter devices/UI, run another removal-mask strategy, or mutate Figma.
+
+One candidate only. If it fails automated or human QA, stop and reassess before any second candidate.
 
 ## Rejected portrait paths
 
@@ -126,9 +162,8 @@ The following remain rejected for production use:
 - semantic portrait mask candidate `65f996ccb4bb7d1e1f7ab98ea94b11866005b8b578c95d818767be3e23ad7acd`;
 - source-proxy mask candidate;
 - subtractive semantic correction candidate `cd450e0e01426f48a071e69f56de5289705ac814db32ab116e7d7b79e315f74d`;
-- any new portrait-removal-mask loop before portrait rebuild approval.
-
-The failed mask attempts proved that inferring complete portrait occupancy from the flattened composition first was the wrong dependency order.
+- any new portrait-removal-mask loop before portrait rebuild approval;
+- further affine/source-candidate tuning after the accepted PR-1 FAIL.
 
 ## Completed architecture / infrastructure
 
@@ -139,10 +174,11 @@ The failed mask attempts proved that inferring complete portrait occupancy from 
 - 3B.1 Deterministic clean-plate engine — COMPLETE as fallback infrastructure.
 - SR-1 Source asset inventory — COMPLETE.
 - SR-2 Provenance/exact-match verification — COMPLETE; website portrait candidates were inconclusive as exact final assets.
-- SR-3 Per-layer classification — COMPLETE, now amended for portrait.
-- SR-4 Decomposition-plan approval — PASS, now amended for portrait.
+- SR-3 Per-layer classification — COMPLETE, amended for portrait.
+- SR-4 Decomposition-plan approval — PASS, amended for portrait.
 - ARC-1 Architecture checkpoint — PASS WITH MINIMAL ARCHITECTURE ADDITION.
 - EX-0 Deterministic master-pixel extraction engine — COMPLETE.
+- PR-1 deterministic source-guided portrait rebuild — COMPLETE WITH AUTOMATED FAIL; no promotion.
 
 EX-0 accepted commits:
 
@@ -183,25 +219,26 @@ Background cleanup remains cumulative once authorized:
 
 `Portrait → TV → Phone → Wall slogan → Wall underline`
 
-The portrait stage now consumes approved portrait occupancy derived from the approved standalone portrait asset, not a pre-rebuild segmentation mask.
+The portrait stage consumes approved portrait occupancy derived from the approved standalone portrait asset, not a pre-rebuild segmentation mask.
 
-## Portrait rebuild QA
+## Portrait reconstruction QA
 
-`docs/DIRECTV_PORTRAIT_REBUILD_CONTRACT.md` governs the next stage.
+`docs/DIRECTV_PORTRAIT_SOURCE_GUIDED_RECONSTRUCTION_CONTRACT.md` governs PR-1B.
 
-At minimum it requires:
+At minimum PR-1B requires:
 
-- recorded website portrait source candidate and SHA;
+- pinned website source candidate and SHA;
 - pinned source repository commit;
 - immutable master hash before/after;
 - complete standalone RGBA portrait;
-- deterministic placement;
+- deterministic final placement;
 - visible-region comparison against immutable master;
 - hidden-region designation limited to TV/phone occlusion;
 - candidate/overlay/diff/alpha/report artifacts;
+- one candidate only;
 - automated gate;
 - human gate `PENDING` until review;
-- no Figma mutation before approval.
+- no background reconstruction or Figma mutation before approval.
 
 ## Clean-plate QA
 
@@ -229,7 +266,8 @@ Generated evidence under `runs/` is local evidence and should not be committed.
 - SR-1–SR-4 — COMPLETE, portrait classification amended
 - ARC-1 — COMPLETE
 - EX-0 — COMPLETE
-- **PR-1 — Produce one source-guided complete DIRECTV portrait candidate — NEXT**
+- PR-1 — deterministic source-guided portrait candidate — COMPLETE / FAIL / NOT PROMOTED
+- **PR-1B — Produce one source-guided reconstructed DIRECTV portrait candidate — NEXT**
 - PR-2 — Automated alignment + visible-region fidelity QA
 - PR-3 — Human visual QA of standalone portrait + recomposed view
 - PR-4 — Promote approved portrait asset / derive occupancy alpha
@@ -250,9 +288,9 @@ Generated evidence under `runs/` is local evidence and should not be committed.
 
 ## Current next step
 
-`PR-1 — Produce exactly one source-guided complete DIRECTV portrait candidate under docs/DIRECTV_PORTRAIT_REBUILD_CONTRACT.md.`
+`PR-1B — Produce exactly one source-guided reconstructed DIRECTV portrait candidate under docs/DIRECTV_PORTRAIT_SOURCE_GUIDED_RECONSTRUCTION_CONTRACT.md.`
 
-Do not run another portrait segmentation/removal-mask strategy. Do not run clean-plate reconstruction yet. Do not mutate Figma yet.
+Do not run another portrait segmentation/removal-mask strategy. Do not run clean-plate reconstruction yet. Do not mutate Figma yet. Do not create multiple portrait variants.
 
 ## Continuity protocol
 
