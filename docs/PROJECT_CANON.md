@@ -138,7 +138,7 @@ Approved architecture changes:
 
 ## EX-0 extraction engine
 
-EX-0 is COMPLETE.
+EX-0 is COMPLETE and accepted after the ARC-1 boundary fix.
 
 - `extract/` provides deterministic `EXTRACT_FROM_MASTER` execution for `raster_extract` and `screen_extract` targets.
 - Output is bounded RGBA using deterministic Figma placement bounds.
@@ -146,13 +146,24 @@ EX-0 is COMPLETE.
 - Alpha values are preserved exactly, including intermediate alpha.
 - Source immutability is verified by SHA-256 before/after execution.
 - `decomposer/primitives.py` is the approved minimal shared seam for bounds, hashing, manifest validation, RGB loading, mask loading, and bounds validation.
-- `cleanplate` remains reconstruction-only; extraction does not depend on `cleanplate` internals.
+- `cleanplate` remains reconstruction-only; extraction no longer imports shared mechanics from `cleanplate.core`.
 - No production DIRECTV extraction was performed during EX-0.
 
 Accepted implementation commits:
 
 - `1c3767561d39f503fc41cdc3eb804d31099fbb67` — extraction engine
 - `e2e433f848b7e83cfc86ca9a1ec9b7c6e30989d2` — isolate shared decomposition primitives
+
+Validation at acceptance:
+
+- full pytest: 17 passed
+- extraction pytest: 6 passed
+- synthetic smoke: PASS
+- RGB mismatches: 0
+- alpha mismatches: 0
+- partial-alpha pixels: 2
+- source unchanged: true
+- `git diff --check`: PASS
 
 Before P1 generalization, add a reproducibility checkpoint that pins/locks runtime dependencies used for deterministic raster output. The lock/pin must cover at least Pillow, NumPy, OpenCV, and jsonschema, and must not interrupt the current DIRECTV proof unless a version mismatch is actively causing non-deterministic behavior.
 
