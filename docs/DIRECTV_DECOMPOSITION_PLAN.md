@@ -1,6 +1,6 @@
 # DIRECTV Decomposition Plan
 
-Status: approved plan amended for portrait source-guided rebuild
+Status: approved plan amended for portrait source-guided rebuild; LOCK #5 approved
 
 ## Scope and evidence
 
@@ -72,8 +72,8 @@ Do not generate another portrait removal mask before the standalone portrait reb
 1. Canonize portrait reclassification and rebuild contract.
 2. Produce one source-guided full portrait candidate.
 3. Validate alignment and visible-region fidelity against the immutable master.
-4. Human visual QA of the standalone portrait and recomposed master view.
-5. Derive portrait occupancy/alpha from the approved portrait asset.
+4. Lock candidate #5 by explicit user decision; no further portrait candidate generation.
+5. Derive portrait occupancy/alpha from the locked portrait asset.
 6. Resume portrait-exposed background clean-plate reconstruction using that approved occupancy geometry.
 7. Continue TV → Phone → native rebuilds → full recomposition QA → Figma promotion.
 

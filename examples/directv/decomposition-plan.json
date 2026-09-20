@@ -1,6 +1,6 @@
 {
   "plan_version": "0.2.0",
-  "status": "APPROVED_AMENDED_PORTRAIT_REBUILD",
+  "status": "APPROVED_LOCK5_PORTRAIT",
   "mockup_id": "directv-hero-01",
   "canvas": {"width": 1586, "height": 992},
   "source_evidence": {
@@ -32,8 +32,8 @@
   "portrait_rebuild_sequence": [
     "produce_one_source_guided_full_portrait_candidate",
     "validate_alignment_and_visible_region_fidelity_against_master",
-    "human_visual_qa",
-    "derive_occupancy_from_approved_portrait_alpha",
+    "lock_candidate_5_by_explicit_user_decision",
+    "derive_occupancy_from_locked_portrait_alpha",
     "resume_portrait_exposed_background_reconstruction"
   ],
   "rejected_portrait_mask_paths": [

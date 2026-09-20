@@ -154,6 +154,20 @@ PR-1B is not permission to redesign the portrait, generate background, alter dev
 
 One candidate only. If it fails automated or human QA, stop and reassess before any second candidate.
 
+## LOCK #5 — approved standalone portrait
+
+Candidate #5 is the explicitly user-approved standalone DIRECTV portrait asset:
+
+- path: `runs/directv-pr1b-candidate5/portrait-candidate.png`
+- SHA-256: `50a24aa6ccffd5ea99e1d7c4247786830666530a09a051f2eb0163ce3fab8326`
+- dimensions: `1048 × 1501`
+- mode: `RGBA`
+- alpha bbox: `x=80 y=37 width=805 height=1464`
+
+This explicit product decision locks candidate #5 despite the prior strict visible-face parity conflict against the immutable master. That fidelity criterion was the source of candidate churn and is superseded for standalone portrait asset selection by the user's LOCK #5 approval. The portrait remains a `REBUILD_RASTER_FROM_SOURCE` asset, approved by explicit user decision.
+
+All further portrait generation and candidate iteration is stopped. Candidates #6 and #7 are rejected and irrelevant. The portrait stage is no longer “generate another portrait.” The next allowed portrait operation is to derive occupancy/alpha from this approved portrait asset and prepare its promotion/use in subsequent decomposition stages.
+
 ## Rejected portrait paths
 
 The following remain rejected for production use:
@@ -267,10 +281,10 @@ Generated evidence under `runs/` is local evidence and should not be committed.
 - ARC-1 — COMPLETE
 - EX-0 — COMPLETE
 - PR-1 — deterministic source-guided portrait candidate — COMPLETE / FAIL / NOT PROMOTED
-- **PR-1B — Produce one source-guided reconstructed DIRECTV portrait candidate — NEXT**
-- PR-2 — Automated alignment + visible-region fidelity QA
-- PR-3 — Human visual QA of standalone portrait + recomposed view
-- PR-4 — Promote approved portrait asset / derive occupancy alpha
+- PR-1B — Produce one source-guided reconstructed DIRECTV portrait candidate — COMPLETE / LOCK #5 APPROVED
+- PR-2 — Automated alignment + visible-region fidelity QA — COMPLETE / SUPERSEDED FOR ASSET SELECTION
+- PR-3 — Human visual QA of standalone portrait + recomposed view — SUPERSEDED BY EXPLICIT LOCK #5
+- **PR-4 — Derive occupancy alpha from locked portrait / prepare promotion handoff — NEXT**
 - 3B.2 — Generate portrait-exposed background clean-plate candidate using approved portrait occupancy
 - 3B.3 — Automated unchanged-region QA
 - 3B.4 — Human background QA
@@ -288,7 +302,7 @@ Generated evidence under `runs/` is local evidence and should not be committed.
 
 ## Current next step
 
-`PR-1B — Produce exactly one source-guided reconstructed DIRECTV portrait candidate under docs/DIRECTV_PORTRAIT_SOURCE_GUIDED_RECONSTRUCTION_CONTRACT.md.`
+`PR-4 — Derive portrait occupancy/alpha from the exact SHA-pinned LOCK #5 portrait asset and prepare promotion/use handoff.`
 
 Do not run another portrait segmentation/removal-mask strategy. Do not run clean-plate reconstruction yet. Do not mutate Figma yet. Do not create multiple portrait variants.
 

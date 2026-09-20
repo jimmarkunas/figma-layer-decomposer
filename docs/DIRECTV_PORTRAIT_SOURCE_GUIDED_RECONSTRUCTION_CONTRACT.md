@@ -1,6 +1,6 @@
 # DIRECTV Source-Guided Portrait Reconstruction Contract
 
-Status: canonical implementation contract for PR-1B
+Status: canonical implementation contract for PR-1B; candidate selection LOCK #5 APPROVED
 
 ## 1. Purpose
 
@@ -199,8 +199,15 @@ Human review must confirm:
 
 ## 14. Promotion gate
 
-Only after automated PASS and explicit human PASS may the PR-1B candidate become the approved standalone portrait asset.
+Candidate #5 is approved as the standalone portrait asset by explicit user decision:
 
-Only then may portrait occupancy/alpha be derived from that approved asset for later portrait-exposed background reconstruction.
+- path: `runs/directv-pr1b-candidate5/portrait-candidate.png`
+- SHA-256: `50a24aa6ccffd5ea99e1d7c4247786830666530a09a051f2eb0163ce3fab8326`
+- human gate for portrait asset selection: `PASS`
+- promotion status: `NOT_PROMOTED` until the separate promotion/handoff stage
+
+No further portrait candidate generation, regeneration, retouching, or bake-off is authorized. Any later full-frame fidelity discussion must not reopen portrait-candidate generation unless explicitly authorized by the user.
+
+Portrait occupancy/alpha must now be derived from the exact approved portrait asset itself for the next promotion/use handoff. Only after that downstream gate may the derived occupancy be used for later portrait-exposed background reconstruction.
 
 No background clean plate or Figma mutation is authorized by PR-1B itself.
