@@ -41,13 +41,38 @@ Before extraction, masking, inpainting, or other clean-plate reconstruction for 
 4. Classify the layer as exactly one of:
    - `RECOVER_SOURCE`
    - `EXTRACT_FROM_MASTER`
+   - `REBUILD_RASTER_FROM_SOURCE`
    - `REBUILD_NATIVE`
    - `RECONSTRUCT_HIDDEN_PIXELS`
-5. Do not run reconstruction unless the layer is explicitly classified `RECONSTRUCT_HIDDEN_PIXELS` and the reason source recovery was insufficient is recorded.
+5. Do not run reconstruction unless the approved per-layer classification and target-specific contract authorize it.
 
 Clean-plate reconstruction is a fallback capability, not the default decomposition strategy.
 
 If source strategy is unresolved, stop and report `BLOCKED` rather than adding more masking/reconstruction tooling.
+
+## Execution-contract gate
+
+Before any image-affecting operation:
+
+1. Read `docs/EXECUTION_CONTRACT.md`.
+2. Load the task-specific YAML execution contract.
+3. Validate it against `schema/edit-operation.schema.json`.
+4. Verify all immutable input hashes before execution.
+5. Confirm the requested tool is explicitly `ALLOWED` by `tool_policy`.
+6. Confirm `execution.candidates_allowed` has not been exhausted.
+7. If any precondition fails or the requested method is unavailable, stop `BLOCKED`.
+8. Never silently substitute another model, tool, source, mask, transform, or method.
+
+For `EXACT_EDIT`:
+
+- `image_gen` is forbidden;
+- an authorized mask is required;
+- deterministic raster processing only;
+- dimensions must remain unchanged;
+- changed pixels outside the authorized mask must equal zero;
+- exactly one candidate is permitted unless a new contract is approved.
+
+For chat-side image generation, the canonical YAML contract still governs the operation. Before generation, the executor must produce the contract execution receipt defined by `docs/EXECUTION_CONTRACT.md`. Chat-generated output is a candidate only and must re-enter repository QA before promotion.
 
 ## Execution rules
 
@@ -61,7 +86,7 @@ If source strategy is unresolved, stop and report `BLOCKED` rather than adding m
 - Generated candidates, previews, diffs, reports, masks, and temporary outputs must remain separate from source assets.
 - Do not use generative image tooling for approved clean-plate reconstruction.
 - No Figma promotion until automated QA and human visual QA pass.
-- Fail closed when provenance, preconditions, bounds, masks, coordinates, or QA state are uncertain.
+- Fail closed when provenance, preconditions, bounds, masks, coordinates, tool authorization, candidate count, or QA state are uncertain.
 - Do not optimize or generalize a fallback technique before proving that the fallback is actually required for the layer.
 
 ## Verification rules
