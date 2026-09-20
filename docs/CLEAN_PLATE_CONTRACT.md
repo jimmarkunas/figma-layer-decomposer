@@ -1,14 +1,30 @@
 # Clean Plate Pipeline Contract
 
-Status: canonical implementation contract for the first production package.
+Status: canonical implementation contract for fallback clean-plate reconstruction.
 
 Current package: **3B — Portrait clean plate** for the DIRECTV hero mock-up.
 
-The same contract must be reusable for TV, phone, wall-message, and future mock-ups.
+The same contract must be reusable for TV, phone, wall-message, and future mock-ups when reconstruction is actually required.
+
+## 0. Source-recovery prerequisite
+
+Clean-plate reconstruction is a fallback capability, not the default decomposition strategy.
+
+Before this contract may be used for a layer, the project MUST complete the source-first decomposition gate in `docs/SOURCE_ASSET_RECOVERY.md`.
+
+The layer must be explicitly classified `RECONSTRUCT_HIDDEN_PIXELS`, with evidence that exact source recovery was attempted first and was insufficient for the pixels that must be revealed.
+
+If an exact reusable source asset exists, use `RECOVER_SOURCE` instead. If the needed visible pixels are already fully represented in the immutable master and no exact standalone source exists, use `EXTRACT_FROM_MASTER`. Editable text/UI/vector content uses `REBUILD_NATIVE`.
+
+No mask generation, inpainting, texture synthesis, or clean-plate candidate run may begin merely because reconstruction tooling is available.
+
+If source provenance or decomposition classification is unresolved, fail closed and stop.
+
+For the current DIRECTV reference, 3B.2 remains paused until source recovery and per-layer classification are complete.
 
 ## 1. Objective
 
-Given an immutable approved master image, an approved removal mask, and a bounded reconstruction zone, produce a clean-plate candidate that reveals plausible background pixels where the removable foreground object used to be while preserving all pixels outside the approved zone.
+Once reconstruction has been explicitly authorized, given an immutable approved master image, an approved removal mask, and a bounded reconstruction zone, produce a clean-plate candidate that reveals plausible background pixels where the removable foreground object used to be while preserving all pixels outside the approved zone.
 
 This is an image-processing package, not a redesign package.
 
@@ -32,6 +48,8 @@ For the first case:
 - approved reconstruction halo: `24 px`
 
 The pipeline MUST reject a master whose dimensions do not match the manifest.
+
+The production run also requires an accepted source-recovery decision authorizing reconstruction for the target layer. That authorization belongs to project/decomposition state; it must not be inferred from the existence of a manifest, mask, or candidate file.
 
 ## 3. Coordinate contract
 
@@ -57,6 +75,8 @@ The target mask is an 8-bit grayscale or RGBA PNG.
 - mask dimensions MUST equal the master dimensions unless the manifest explicitly declares a bounded mask with placement coordinates
 
 The approved reconstruction zone is the hard maximum edit boundary. A mask may be smaller than the zone but may never authorize pixels outside it.
+
+A mask is not a substitute for source-recovery proof. It may be produced only after reconstruction for the layer has been authorized.
 
 ## 5. Reconstruction boundary
 
@@ -111,6 +131,8 @@ Permitted implementation approaches include:
 
 The backend may not reinterpret the entire image. Only the bounded reconstruction zone may be synthesized.
 
+The existence of a more sophisticated backend does not authorize reconstruction; authorization comes from the source-recovery/decomposition gate.
+
 ## 7. Preferred libraries
 
 Baseline runtime:
@@ -122,9 +144,23 @@ Baseline runtime:
 - scikit-image for SSIM / structural metrics when useful
 - pytest
 
-Avoid heavyweight dependencies unless they materially improve reconstruction quality and are isolated behind the backend interface.
+Avoid heavyweight dependencies unless they materially improve reconstruction quality, are isolated behind the backend interface, and reconstruction has already been proven necessary.
 
 ## 8. Required pipeline stages
+
+### 0. Verify reconstruction authorization
+
+Before validating raster inputs, verify that the target layer has completed source recovery and is explicitly classified `RECONSTRUCT_HIDDEN_PIXELS`.
+
+Confirm the project state records:
+
+- source recovery was attempted;
+- searched sources/systems are identified;
+- exact source recovery was insufficient for the required hidden pixels;
+- reconstruction is approved for this target;
+- neighboring foreground that must remain untouched is identified.
+
+If this authorization is absent or ambiguous, stop `BLOCKED` before generating or consuming a removal mask.
 
 ### A. Validate inputs
 
@@ -176,7 +212,7 @@ Recommended metrics:
 
 ### F. Human visual QA
 
-Automation cannot approve generative plausibility.
+Automation cannot approve reconstruction plausibility.
 
 A human must inspect:
 
@@ -234,8 +270,9 @@ Figma is a destination, not the reconstruction engine.
 
 No clean-plate asset is uploaded to Figma unless:
 
-- automated gate = `PASS`
-- human gate = `PASS`
+- source-recovery/decomposition gate authorized reconstruction;
+- automated gate = `PASS`;
+- human gate = `PASS`.
 
 Each approved output must include placement metadata:
 
@@ -259,8 +296,9 @@ Do not infer placement from Figma after generation; placement comes from the man
 
 The pipeline must fail closed.
 
-It must not write an approved artifact or trigger Figma handoff when:
+It must not generate or promote an approved artifact or trigger Figma handoff when:
 
+- source recovery / decomposition classification is incomplete or does not authorize reconstruction
 - source dimensions mismatch
 - mask dimensions mismatch
 - target is missing
@@ -289,6 +327,7 @@ approved/<mockup-id>/<target-id>/...
 
 3B is complete only when all are true:
 
+- [ ] source-recovery/decomposition gate explicitly authorizes portrait hidden-pixel reconstruction
 - [ ] portrait is absent from the clean-plate candidate
 - [ ] no neighboring approved foreground object is unintentionally deleted
 - [ ] concrete architecture is visually plausible
@@ -308,9 +347,11 @@ No DIRECTV-specific coordinates or filenames may be hard-coded in reusable modul
 
 All mock-up-specific values must come from the manifest.
 
-The reusable engine must support multiple targets per mock-up and cumulative clean-plate sequencing, because later targets may overlap pixels reconstructed by earlier targets.
+Each future mock-up must run the source-recovery/decomposition gate before deciding which clean-plate stages are actually necessary. Recovered source assets may eliminate some reconstruction stages entirely.
 
-For the DIRECTV sequence:
+When reconstruction is authorized, the reusable engine must support multiple targets per mock-up and cumulative clean-plate sequencing, because later targets may overlap pixels reconstructed by earlier targets.
+
+For the DIRECTV reconstruction sequence, if those stages remain necessary after source recovery:
 
 ```text
 master
@@ -321,7 +362,7 @@ master
   -> wall underline removed
 ```
 
-Each stage consumes the approved output of the prior stage.
+Each reconstruction stage consumes the approved output of the prior reconstruction stage.
 
 ## 16. Scope exclusions for 3B.1
 
