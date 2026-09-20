@@ -8,7 +8,7 @@ This file is the canonical continuity handoff for the Figma Layer Decomposer pro
 
 When sources conflict, use this order:
 
-1. **Immutable master PNG** — visual acceptance authority.
+1. **Immutable master PNG** — visual acceptance authority for reconstruction fidelity.
 2. `docs/CLEAN_PLATE_CONTRACT.md` — clean-plate implementation contract.
 3. `schema/layer-manifest.schema.json` — machine-readable manifest contract.
 4. This file — current project state, accepted decisions, roadmap, and next step.
@@ -16,14 +16,36 @@ When sources conflict, use this order:
 
 Do not infer approval from the mere existence of an artifact.
 
+The authority order above governs decomposition and faithful reconstruction. After an approved reconstruction is promoted into the canonical Personal Brand Figma library, that canonical Figma template becomes the visual authority for reusable template variants. React and PowerPoint outputs are downstream renderings of the approved template contract; they do not become competing design-system authorities.
+
 ## Mission
 
 Turn approved flat mock-up PNGs into genuinely editable layered Figma compositions while preserving 1:1 visual fidelity to the immutable master image.
 
+The business outcome does not stop at decomposition. The decomposer is the recovery and reconstruction front-end for a reusable personal-brand template pipeline: approved concept image → editable Figma reconstruction → reusable canonical Figma template → semantic template contract → React and PowerPoint presentation outputs.
+
+## Product north star
+
+The project succeeds when an approved AI-generated concept can be recovered without losing the visual quality Jim approved, promoted into the existing Jim Markunas Personal Brand design system, and reused repeatedly without reconstructing the composition from scratch.
+
+The intended end-to-end flow is:
+
+`APPROVED CONCEPT PNG → SOURCE RECOVERY / DECOMPOSITION → 1:1 EDITABLE FIGMA → TEMPLATE PROMOTION → SEMANTIC CONTENT CONTRACT → REACT / POWERPOINT`
+
+Product boundaries:
+
+- This repository owns source recovery, decomposition, faithful reconstruction, placement manifests, and the proof that a reconstructed composition can be promoted into a reusable template.
+- The existing Jim Markunas Personal Brand Figma file remains the canonical design-system and reusable-template authority. Do not create a second permanent design system inside this repository or the reconstruction workspace.
+- The current `JM-Personal-Brand-V2` Figma file is a reconstruction/staging workspace for this project, not a replacement design-system authority.
+- React and PowerPoint are downstream consumers of approved templates. They should consume semantic template/content contracts rather than reverse-engineer pixels or invent their own layout rules.
+- A successful PowerPoint output must preserve editability of text and replaceable media where practical; a flattened full-slide screenshot is not the target success path.
+- Do not generalize through mock-ups #2–#6 merely to prove more decomposition. First prove that the DIRECTV reconstruction can become a reusable template and feed both downstream presentation formats.
+- Do not build a generic design compiler, Figma plugin framework, renderer registry, template DSL, bidirectional sync system, or other broad infrastructure before the DIRECTV template-promotion proof demonstrates the exact reusable mechanics actually needed.
+
 ## Core rules
 
-- The master PNG is the acceptance authority.
-- Do not redesign, reinterpret, beautify, or improve approved mock-ups.
+- The master PNG is the acceptance authority for faithful reconstruction.
+- Do not redesign, reinterpret, beautify, or improve approved mock-ups during reconstruction.
 - Preserve untouched source pixels exactly wherever possible.
 - Use a hybrid decomposition model: photographic/environmental content stays raster; editable text/UI/vectors are rebuilt natively in Figma.
 - **Source recovery comes before extraction or reconstruction.** Recover and verify exact original assets whenever possible.
@@ -36,8 +58,9 @@ Turn approved flat mock-up PNGs into genuinely editable layered Figma compositio
 - Work incrementally: one bounded operation → validate → stop.
 - Prefer deterministic scripting, exact source recovery, masks, pixel diffs, and repeatable tooling over manual approximation.
 - Use Codex for bounded local implementation tasks involving asset inventory, image processing, tests, manifests, file operations, and automation.
-- Use ChatGPT for architecture, decomposition strategy, acceptance criteria, source/provenance review, Figma QA, and technical review.
+- Use ChatGPT for architecture, decomposition strategy, acceptance criteria, source/provenance review, Figma QA, template-promotion QA, and technical review.
 - Do not introduce abstractions, services, packages, or infrastructure speculatively. Add reusable architecture only after DIRECTV proves a second real consumer or repeated mechanic.
+- Reusable template promotion must consume the canonical Personal Brand design system rather than duplicating brand tokens, typography, components, or visual rules inside the decomposer.
 
 ## Repository
 
@@ -51,12 +74,20 @@ Turn approved flat mock-up PNGs into genuinely editable layered Figma compositio
 
 ## Figma
 
+### Reconstruction workspace
+
 - File: `https://www.figma.com/design/3ZYkEtZVyRH9B2DfVpersf/JM-Personal-Brand-V2?node-id=240-4`
 - File key: `3ZYkEtZVyRH9B2DfVpersf`
 - Page: `999-1 Asset Rebuild`
 - Reference frame: `240:4 — 00_Master_Reference`
 - Editable frame: `240:5 — Editable Master Reference 01 — Layered`
 - Canvas: `1586 × 992`
+
+### Canonical Personal Brand design system / promotion destination
+
+- Canonical Figma: `https://www.figma.com/design/euxFg8XeKtFJRw7PWOJRWa/JM-Personal-Brand`
+- The canonical Personal Brand Figma file owns reusable design-system foundations, components, presentation assets, and promoted templates.
+- The decomposer workspace may prove and stage reconstructed assets, but an accepted reusable template must ultimately be promoted into the canonical Personal Brand Figma authority rather than establishing a parallel permanent library.
 
 ## Current reference mock-up
 
@@ -76,6 +107,8 @@ Top-level groups inside the editable frame:
 - `07_WALL_MESSAGE`
 - `08_PROCESS_STRIP`
 - `09_BOTTOM_SIGNATURE`
+
+These groups are decomposition/reconstruction structure. Template promotion may map them into semantic template slots and canonical design-system components after the DIRECTV reconstruction passes 1:1 acceptance; do not prematurely redesign the current reconstruction hierarchy around a speculative downstream schema.
 
 ## Source-first decomposition gate
 
@@ -114,6 +147,71 @@ After SR-4 and before production decomposition resumes, run a bounded architectu
 This checkpoint is a scalability guardrail, not a refactor mandate. If the current structure is sufficient, the correct result is `NO CHANGE`.
 
 Before P1 generalization, add a reproducibility checkpoint that pins/locks runtime dependencies used for deterministic raster output. The lock/pin must cover at least Pillow, NumPy, OpenCV, and jsonschema, and must not interrupt the current DIRECTV proof unless a version mismatch is actively causing non-deterministic behavior.
+
+## Template Promotion & Consumption proof
+
+**TP-1 is a required business-case gate after the complete DIRECTV editable reconstruction passes and before broad generalization to mock-ups #2–#6.** It is not active implementation while DIRECTV source recovery/reconstruction remains unfinished.
+
+### Activation gate
+
+- The DIRECTV composition has been reconstructed as a genuinely editable Figma composition.
+- Full-frame human visual QA confirms the reconstructed DIRECTV composition preserves the approved master at the required fidelity.
+- The reconstruction contains the editable/native elements required for practical reuse rather than only a stack of flattened raster layers.
+
+### User outcome
+
+Starting from the accepted DIRECTV reconstruction, Jim can create a new branded presentation variant without reconstructing the design, then use the same template semantics to produce both a React presentation slide and an editable PowerPoint slide.
+
+### Minimum semantic template roles
+
+TP-1 must define the smallest useful semantic contract for the roles actually present in the accepted template. Expected roles include, where applicable:
+
+- background / environment
+- portrait / subject
+- primary media or device
+- secondary media or device
+- eyebrow / label
+- headline
+- supporting copy
+- metrics collection
+- environmental message / wall treatment
+- process strip / steps
+- signature / footer
+
+The exact schema, file name, or serialization format is deliberately deferred until TP-1 implementation. Do not retrofit the current decomposition manifest into a generic template DSL before the real template proof shows what is required.
+
+### Required proof
+
+1. **Canonical Figma promotion** — promote the accepted DIRECTV reconstruction into the existing canonical Personal Brand Figma library as a reusable template/component pattern, with no second permanent design-system authority.
+2. **Content substitution** — create at least one non-DIRECTV variant from the promoted template by changing the project/company identity, headline/supporting copy, at least two metrics, and at least one major portrait/media/device asset without rebuilding the composition from scratch.
+3. **Brand-system binding** — reusable typography, colors, spacing, components, and other brand mechanics must reference or conform to the canonical Personal Brand design system rather than creating decomposer-owned duplicates.
+4. **Semantic consumption** — define one bounded content/template contract that can populate the approved template without downstream consumers scraping Figma pixels or layer names ad hoc.
+5. **React proof** — render one presentation slide from the promoted template semantics in the approved React presentation path.
+6. **PowerPoint proof** — render one PowerPoint slide from the same template semantics; text must remain editable and major media must remain replaceable where practical. A single flattened slide image does not satisfy this requirement.
+7. **Visual acceptance** — Figma variant, React output, and PowerPoint output must preserve the approved template's recognizable composition, hierarchy, typography, and brand treatment. Renderer-specific deterministic checks and any cross-render tolerance may be defined during TP-1 because browser, Figma, and PowerPoint font/rendering engines differ.
+8. **Reuse proof** — producing the variant must not require a new one-off reconstruction pipeline or hand-coded layout rewrite specific to the new content.
+
+### TP-1 failure conditions
+
+TP-1 is not accepted if:
+
+- the DIRECTV reconstruction can only be reused by manually rebuilding its layout;
+- the reusable template lives only in the reconstruction workspace and creates a second permanent brand library;
+- React and PowerPoint each require unrelated one-off layout definitions rather than consuming the same bounded template semantics;
+- PowerPoint is accepted only as a flattened screenshot;
+- template promotion requires speculative generic infrastructure before a concrete second template/consumer proves the need.
+
+### Non-goals for TP-1
+
+TP-1 does not require:
+
+- a universal Figma-to-code compiler;
+- bidirectional Figma ↔ React ↔ PowerPoint synchronization;
+- arbitrary third-party design import;
+- an entire presentation-deck generator;
+- a generic plugin framework or template registry;
+- full automation of every future mock-up;
+- decomposition of mock-ups #2–#6 before the reuse proof passes.
 
 ## Completed work
 
@@ -255,14 +353,18 @@ The shared VS Code environment may contain multiple sibling repositories, but th
 - 3H — Final approved background
 - 4A–4F — Portrait recovery/extraction + QA according to SR classification
 - 5A–5I — Device recovery/extraction + QA according to SR classification
+- **DTV-FINAL — Complete editable DIRECTV reconstruction + full-frame 1:1 visual acceptance**
+- **TP-1 — Template Promotion & Consumption Proof** — promote the accepted reconstruction into the canonical Personal Brand Figma library, prove a non-DIRECTV reusable variant, then prove one React slide and one editable PowerPoint slide from the same semantic template contract
 - **DEP-1 — Deterministic dependency lock/pinning** — complete before P1 generalization; pin/lock raster-processing/runtime dependencies for reproducible output
-- P1–P4 — Generalize and package for mock-ups #2–#6, preserving the source-first gate
+- **P1–P4 — Generalize and package for mock-ups #2–#6 only after TP-1 is ACCEPTED**, preserving the source-first gate and treating each additional mock-up as a candidate reusable template rather than decomposition-only output
 
 ## Current next step
 
 `SR-2 — Provenance / exact-match verification for the DIRECTV portrait candidates.`
 
 Do not generate another portrait mask or clean-plate candidate before SR-1 through SR-4 and ARC-1 are complete.
+
+TP-1 is canonized but inactive. Do not start template-promotion, React-renderer, or PowerPoint-renderer implementation until the DIRECTV reconstruction reaches `DTV-FINAL` acceptance.
 
 ## Continuity protocol
 
@@ -275,4 +377,4 @@ At the start of any new ChatGPT or Codex session:
 5. Confirm current Git root, branch, working-tree status, issue, and roadmap before editing.
 6. Perform one bounded operation, validate it, then stop.
 
-Update this file whenever the accepted roadmap state, next step, canonical coordinates, source-recovery state, architecture checkpoint state, dependency reproducibility state, or source-of-truth locations materially change.
+Update this file whenever the accepted roadmap state, next step, canonical coordinates, source-recovery state, architecture checkpoint state, dependency reproducibility state, template-promotion state, downstream-consumption proof, or source-of-truth locations materially change.
