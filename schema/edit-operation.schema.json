@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/figma-layer-decomposer/edit-operation.schema.json",
+  "title": "Figma Layer Decomposer Execution Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "operation_id",
+    "operation_class",
+    "inputs",
+    "tool_policy",
+    "execution",
+    "must_preserve",
+    "must_not_generate",
+    "qa",
+    "human_gate",
+    "promotion"
+  ],
+  "properties": {
+    "version": {"type": "string", "minLength": 1},
+    "operation_id": {"type": "string", "minLength": 1},
+    "operation_class": {
+      "type": "string",
+      "enum": [
+        "EXACT_EDIT",
+        "EXTRACT",
+        "REBUILD_NATIVE",
+        "REBUILD_RASTER_FROM_SOURCE",
+        "RECONSTRUCT_HIDDEN_PIXELS",
+        "GENERATIVE_EXPLORATION"
+      ]
+    },
+    "inputs": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/input_asset"}
+    },
+    "authorized_mask": {
+      "anyOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/mask"}
+      ]
+    },
+    "tool_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["image_gen", "deterministic_raster", "segmentation", "alternate_source"],
+      "properties": {
+        "image_gen": {"$ref": "#/$defs/tool_state"},
+        "deterministic_raster": {"$ref": "#/$defs/tool_state"},
+        "segmentation": {"$ref": "#/$defs/tool_state"},
+        "alternate_source": {"$ref": "#/$defs/tool_state"}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidates_allowed", "fail_closed", "silent_fallback_allowed"],
+      "properties": {
+        "candidates_allowed": {"type": "integer", "minimum": 1},
+        "fail_closed": {"const": true},
+        "silent_fallback_allowed": {"const": false}
+      }
+    },
+    "must_preserve": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "may_synthesize_only": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "must_not_generate": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "qa": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verify_input_hashes", "dimensions_unchanged_when_applicable", "zero_changed_pixels_outside_mask_when_applicable"],
+      "properties": {
+        "verify_input_hashes": {"const": true},
+        "dimensions_unchanged_when_applicable": {"type": "boolean"},
+        "zero_changed_pixels_outside_mask_when_applicable": {"type": "boolean"}
+      }
+    },
+    "human_gate": {"type": "string", "enum": ["PENDING", "PASS", "FAIL"]},
+    "promotion": {"type": "string", "enum": ["NOT_PROMOTED", "APPROVED_SOURCE"]}
+  },
+  "$defs": {
+    "tool_state": {"type": "string", "enum": ["ALLOWED", "DENIED"]},
+    "input_asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"},
+        "role": {"type": "string", "minLength": 1}
+      }
+    },
+    "mask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "meaning"],
+      "properties": {
+        "file": {"type": "string", "minLength": 1},
+        "meaning": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"operation_class": {"const": "EXACT_EDIT"}}},
+      "then": {
+        "required": ["authorized_mask"],
+        "properties": {
+          "authorized_mask": {"$ref": "#/$defs/mask"},
+          "tool_policy": {
+            "properties": {
+              "image_gen": {"const": "DENIED"},
+              "deterministic_raster": {"const": "ALLOWED"}
+            }
+          },
+          "execution": {
+            "properties": {"candidates_allowed": {"const": 1}}
+          },
+          "qa": {
+            "properties": {
+              "dimensions_unchanged_when_applicable": {"const": true},
+              "zero_changed_pixels_outside_mask_when_applicable": {"const": true}
+            }
+          }
+        }
+      }
+    }
+  ]
+}
