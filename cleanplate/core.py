@@ -71,6 +71,16 @@ def assert_unchanged_region(source: np.ndarray, output: np.ndarray, zone: Bounds
     _, outside_count = changed_pixel_counts(source, output, zone)
     if outside_count: raise ValueError(f"unchanged-region gate failed: {outside_count} outside-zone pixels changed")
 
+def validate_candidate_patch(patch: np.ndarray, expected_shape: tuple[int, ...]) -> None:
+    if not isinstance(patch, np.ndarray) or patch.shape != expected_shape:
+        raise ValueError("backend candidate patch has incompatible shape/type")
+    if patch.dtype.kind not in "uif":
+        raise ValueError("backend candidate patch must use a numeric integer or floating-point type")
+    if not np.isfinite(patch).all():
+        raise ValueError("backend candidate patch contains non-finite pixel values")
+    if np.any((patch < 0) | (patch > 255)):
+        raise ValueError("backend candidate patch contains pixel values outside 0..255")
+
 def run(manifest_path: Path, schema_path: Path, source_path: Path, mask_path: Path, target_id: str, run_dir: Path, backend=None) -> dict:
     manifest = validate_manifest(manifest_path, schema_path)
     if target_id not in manifest["targets"]: raise ValueError(f"unknown target: {target_id}")
@@ -86,7 +96,7 @@ def run(manifest_path: Path, schema_path: Path, source_path: Path, mask_path: Pa
     if not edit_mask.any(): raise ValueError("target mask has no pixels inside approved zone")
     backend = backend or OpenCVInpaintingBackend()
     patch = backend.reconstruct(source, (edit_mask.astype(np.uint8) * 255), zone)
-    if patch.shape != source[zone.y:zone.bottom, zone.x:zone.right].shape: raise ValueError("backend returned invalid patch dimensions")
+    validate_candidate_patch(patch, source[zone.y:zone.bottom, zone.x:zone.right].shape)
     output = source.copy(); local = edit_mask[zone.y:zone.bottom, zone.x:zone.right]
     zone_output = output[zone.y:zone.bottom, zone.x:zone.right].copy(); zone_output[local] = patch[local]; output[zone.y:zone.bottom, zone.x:zone.right] = zone_output
     inside_count, outside_count = changed_pixel_counts(source, output, zone); changed = np.any(output != source, axis=2); outside = changed.copy(); outside[zone.y:zone.bottom, zone.x:zone.right] = False

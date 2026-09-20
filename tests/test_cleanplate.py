@@ -13,6 +13,12 @@ class SolidBackend:
     def reconstruct(self, master, target_mask, approved_zone):
         return np.full_like(master[approved_zone.y:approved_zone.bottom, approved_zone.x:approved_zone.right], 77)
 
+class InvalidBackend:
+    def reconstruct(self, master, target_mask, approved_zone):
+        patch = np.zeros_like(master[approved_zone.y:approved_zone.bottom, approved_zone.x:approved_zone.right], dtype=np.float32)
+        patch[0, 0, 0] = np.nan
+        return patch
+
 def setup_case(tmp_path, *, zone=(2, 2, 4, 4), core=(3, 3, 2, 2), canvas=(10, 8), mask_size=None, mask_mode="full_canvas", mask_bounds=None):
     w, h = canvas; source = np.arange(w*h*3, dtype=np.uint8).reshape(h, w, 3)
     source_path = tmp_path / "master.png"; mask_path = tmp_path / "mask.png"
@@ -63,6 +69,12 @@ def test_bounded_mask_is_placed_and_validated(tmp_path):
     mp, source, mask, _ = setup_case(tmp_path, mask_mode="bounded", mask_bounds=(3, 3, 2, 2))
     report = run(mp, ROOT/"schema/layer-manifest.schema.json", source, mask, "target", tmp_path/"run", SolidBackend())
     assert report["changed_pixels_inside_zone"] == 4
+
+def test_invalid_backend_candidate_is_rejected_before_compositing(tmp_path):
+    mp, source, mask, _ = setup_case(tmp_path)
+    with pytest.raises(ValueError, match="non-finite"):
+        run(mp, ROOT/"schema/layer-manifest.schema.json", source, mask, "target", tmp_path/"run", InvalidBackend())
+    assert not (tmp_path/"run").exists()
 
 def test_serialized_candidate_is_checked_by_unchanged_gate(tmp_path, monkeypatch):
     from cleanplate import core
