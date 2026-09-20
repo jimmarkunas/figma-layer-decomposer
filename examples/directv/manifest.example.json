@@ -21,6 +21,10 @@
         "file": "input/directv-hero-01/masks/portrait.png",
         "mode": "full_canvas"
       },
+      "protected_regions": [
+        {"x": 913, "y": 413, "width": 544, "height": 397},
+        {"x": 791, "y": 532, "width": 132, "height": 280}
+      ],
       "output": {
         "canonical_file": "output/directv-hero-01/background/portrait-clean-plate.png",
         "preview_file": "output/directv-hero-01/background/portrait-clean-plate-preview.png",

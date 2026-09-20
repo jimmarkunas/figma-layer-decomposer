@@ -87,6 +87,10 @@
             "bounds": {"$ref": "#/$defs/bounds"}
           }
         },
+        "protected_regions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/bounds"}
+        },
         "output": {
           "type": "object",
           "additionalProperties": false,

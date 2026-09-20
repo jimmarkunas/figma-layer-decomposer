@@ -69,6 +69,8 @@ No step may silently rescale the master, mask, or output.
 
 The target mask is an 8-bit grayscale or RGBA PNG.
 
+An authorized reconstruction may declare zero or more protected foreground regions. Before reconstruction, the pipeline subtracts those regions from the target mask: protected pixels become exactly zero and all unprotected target alpha/gray values are preserved. Protected foreground pixels remain byte-identical during that stage; cumulative later stages may reconstruct them when their own removal stage is reached.
+
 - black / alpha 0 = immutable source region
 - white / alpha 255 = target removal region
 - intermediate values may be used for feathering

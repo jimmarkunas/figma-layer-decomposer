@@ -42,6 +42,12 @@ def validate_candidate_patch(patch: np.ndarray, expected_shape: tuple[int, ...])
     if np.any((patch < 0) | (patch > 255)):
         raise ValueError("backend candidate patch contains pixel values outside 0..255")
 
+def apply_protected_regions(target_mask: np.ndarray, protected_regions: list[Bounds]) -> np.ndarray:
+    effective = target_mask.copy()
+    for region in protected_regions:
+        effective[region.y:region.bottom, region.x:region.right] = 0
+    return effective
+
 def run(manifest_path: Path, schema_path: Path, source_path: Path, mask_path: Path, target_id: str, run_dir: Path, backend=None) -> dict:
     manifest = validate_manifest(manifest_path, schema_path)
     if target_id not in manifest["targets"]: raise ValueError(f"unknown target: {target_id}")
@@ -53,7 +59,11 @@ def run(manifest_path: Path, schema_path: Path, source_path: Path, mask_path: Pa
     if not (zone.x <= core.x and zone.y <= core.y and zone.right >= core.right and zone.bottom >= core.bottom): raise ValueError("core bounds are not contained by approved zone")
     mask_spec = target["mask"]; mask_bounds = _bounds(mask_spec["bounds"]) if "bounds" in mask_spec else None
     mask = load_mask(mask_path, canvas, mask_spec["mode"], mask_bounds)
-    edit_mask = ((mask > 0) & (np.indices(mask.shape)[1] >= zone.x) & (np.indices(mask.shape)[1] < zone.right) & (np.indices(mask.shape)[0] >= zone.y) & (np.indices(mask.shape)[0] < zone.bottom))
+    protected_regions = [_bounds(raw) for raw in target.get("protected_regions", [])]
+    for region in protected_regions:
+        validate_bounds(region, canvas, "protected region")
+    effective_mask = apply_protected_regions(mask, protected_regions)
+    edit_mask = ((effective_mask > 0) & (np.indices(mask.shape)[1] >= zone.x) & (np.indices(mask.shape)[1] < zone.right) & (np.indices(mask.shape)[0] >= zone.y) & (np.indices(mask.shape)[0] < zone.bottom))
     if not edit_mask.any(): raise ValueError("target mask has no pixels inside approved zone")
     backend = backend or OpenCVInpaintingBackend()
     patch = backend.reconstruct(source, (edit_mask.astype(np.uint8) * 255), zone)

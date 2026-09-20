@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from cleanplate.core import Bounds, assert_unchanged_region, changed_pixel_counts, run, validate_manifest
+from cleanplate.core import Bounds, apply_protected_regions, assert_unchanged_region, changed_pixel_counts, run, validate_manifest
 
 ROOT = Path(__file__).parents[1]
 
@@ -92,3 +92,21 @@ def test_cumulative_sequencing_uses_prior_output(tmp_path):
     second_mask = tmp_path/"mask2.png"; Image.fromarray(np.pad(np.zeros((2,2),dtype=np.uint8), ((3,3),(3,5)), constant_values=255)).save(second_mask)
     second = run(mp, ROOT/"schema/layer-manifest.schema.json", tmp_path/"first/candidate.png", second_mask, "target", tmp_path/"second", SolidBackend())
     assert second["source_sha256"] == __import__("hashlib").sha256((tmp_path/"first/candidate.png").read_bytes()).hexdigest()
+
+def test_protected_regions_subtract_without_altering_unprotected_alpha():
+    mask = np.array([[0, 64, 128, 255], [255, 200, 100, 0]], dtype=np.uint8)
+    effective = apply_protected_regions(mask, [Bounds(1, 0, 1, 2)])
+    assert np.array_equal(effective, [[0, 0, 128, 255], [255, 0, 100, 0]])
+    assert np.all(effective <= mask)
+
+def test_runner_preserves_protected_pixels_and_source_mask(tmp_path):
+    mp, source, mask, manifest = setup_case(tmp_path, zone=(2, 2, 4, 4))
+    original_mask = np.asarray(Image.open(mask)).copy()
+    manifest["targets"]["target"]["protected_regions"] = [{"x": 3, "y": 3, "width": 1, "height": 1}]
+    mp.write_text(json.dumps(manifest))
+    report = run(mp, ROOT/"schema/layer-manifest.schema.json", source, mask, "target", tmp_path/"run", SolidBackend())
+    output = np.asarray(Image.open(tmp_path/"run/candidate.png").convert("RGB"))
+    source_rgb = np.asarray(Image.open(source).convert("RGB"))
+    assert report["changed_pixels_outside_zone"] == 0
+    assert np.array_equal(output[3, 3], source_rgb[3, 3])
+    assert np.array_equal(np.asarray(Image.open(mask)), original_mask)
