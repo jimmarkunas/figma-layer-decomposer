@@ -1,0 +1,59 @@
+version: "1.0"
+operation_id: "PR-1B-001"
+operation_class: "REBUILD_RASTER_FROM_SOURCE"
+
+inputs:
+  identity_source:
+    path: "hero-jim-01-cutout-v2.png"
+    sha256: "06294961581f4fd3a0b08dae8af3eacf7c05e2efb3d61fe72fb517abe2995100"
+    role: "identity/source reference"
+  master:
+    path: "input/directv-hero-01/master.png"
+    sha256: "d5a66264cc44c449f0e29d045d729c81fe51564b768b371fd9544b34b60f22e6"
+    role: "visible acceptance target"
+
+authorized_mask: null
+
+tool_policy:
+  image_gen: "ALLOWED"
+  deterministic_raster: "ALLOWED"
+  segmentation: "DENIED"
+  alternate_source: "DENIED"
+
+execution:
+  candidates_allowed: 1
+  fail_closed: true
+  silent_fallback_allowed: false
+
+must_preserve:
+  - "identity"
+  - "visible face appearance"
+  - "visible pose"
+  - "visible crop"
+  - "visible coat/clothing treatment"
+  - "visible lighting"
+  - "visible shadowing"
+  - "visible silhouette"
+  - "target placement"
+
+may_synthesize_only:
+  - "portrait pixels hidden by TV occlusion"
+  - "portrait pixels hidden by phone occlusion"
+
+must_not_generate:
+  - "background/environment"
+  - "halo"
+  - "glow"
+  - "TV"
+  - "phone"
+  - "UI"
+  - "text"
+  - "wall content"
+
+qa:
+  verify_input_hashes: true
+  dimensions_unchanged_when_applicable: false
+  zero_changed_pixels_outside_mask_when_applicable: false
+
+human_gate: "PENDING"
+promotion: "NOT_PROMOTED"
