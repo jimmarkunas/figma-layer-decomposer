@@ -167,4 +167,15 @@ Only an explicit human PASS plus any required automated PASS may move an artifac
 - input hash verification;
 - exact-edit unchanged-region verification.
 
+`operation-guard` exposes those checks to agents and local workflows:
+
+```bash
+operation-guard validate --contract examples/directv/pr-1b.yaml --root .
+operation-guard receipt --contract examples/directv/pr-1b.yaml
+operation-guard authorize --contract examples/directv/pr-1b.yaml --tool image_gen
+operation-guard verify-exact-edit --original ORIGINAL.png --candidate CANDIDATE.png --mask MASK.png
+```
+
+Each command fails closed with a non-zero exit code on contract or QA failure.
+
 The guardrail is intentionally small. It does not orchestrate models or replace domain-specific QA.
