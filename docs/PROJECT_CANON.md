@@ -2,18 +2,19 @@
 
 ## Purpose
 
-This file is the canonical continuity handoff for the Figma Layer Decomposer project. It exists so ChatGPT, Codex, local development sessions, and future conversations can recover the current state without relying on one chat transcript.
+This file is the canonical continuity handoff for the Figma Layer Decomposer project. It exists so ChatGPT, Codex, local development sessions, and future conversations can recover the current accepted state without relying on one chat transcript.
 
 ## Authority order
 
 When sources conflict, use this order:
 
-1. **Immutable master PNG** — visual acceptance authority for reconstruction fidelity.
-2. The current bounded GitHub implementation issue for the active operation.
-3. `docs/CLEAN_PLATE_CONTRACT.md` when hidden-background reconstruction is actually in scope.
-4. `schema/layer-manifest.schema.json` for machine-readable placement/QA contracts.
-5. This file — current accepted project state, boundaries, and next step.
-6. Notion index / ChatGPT Project uploads — pointers only.
+1. **Jim's explicit current instruction** in the active working session.
+2. **Immutable master PNG** — visual acceptance authority for reconstruction fidelity.
+3. **This file** — current accepted product state, active delivery package, Figma target, and current reconstruction authorization.
+4. `docs/CLEAN_PLATE_CONTRACT.md` — generic implementation contract when hidden-background reconstruction is actually in scope.
+5. `schema/layer-manifest.schema.json` — machine-readable placement/QA contract.
+6. A GitHub issue only when this file explicitly names that issue as the active delivery package.
+7. Notion index / ChatGPT Project uploads — pointers only.
 
 Do not infer approval from the mere existence of an artifact.
 
@@ -27,125 +28,208 @@ Cross-system flow:
 
 `APPROVED CONCEPT PNG → SOURCE RECOVERY / DECOMPOSITION → 1:1 EDITABLE FIGMA → PROMOTION_READY → PBDS CANONICAL FIGMA PROMOTION → SEMANTIC CONTRACT → REACT / POWERPOINT`
 
+## Two-part product boundary
+
+This project is Part 1 of a two-part concept-to-production product.
+
+### Part 1 — Figma Layer Decomposer
+
+Owns:
+
+- approved concept ingestion;
+- source recovery and provenance;
+- foreground/background inventory and classification;
+- raster extraction/rebuild;
+- hidden-background reconstruction when genuinely required;
+- native Figma rebuild of editable text/UI/vector content;
+- deterministic placement/manifests;
+- fidelity QA;
+- staging Figma composition;
+- `PROMOTION_READY` handoff.
+
+### Part 2 — Personal Brand Design System / PBDS-4
+
+Owns after `PROMOTION_READY`:
+
+- canonical `JM-Personal-Brand` Figma promotion;
+- reusable template/component definition;
+- semantic content/template contract;
+- non-source content-substitution proof;
+- React presentation consumption;
+- editable PowerPoint consumption;
+- later cross-surface/template-family generalization.
+
+Do not collapse the two ownership boundaries. DIRECTV is the first proof object for Part 1 and the bridge specimen into Part 2; it is not the only slide/product.
+
 ## Hard anti-spin rule
 
-The project is now past architecture discovery for the DIRECTV portrait. Do not add another roadmap rewrite, segmentation/mask strategy, model bake-off, decomposition framework, orchestration layer, handoff contract, or governance artifact before the active visual proof completes.
+The project is past architecture discovery for DIRECTV. Do not create another roadmap rewrite, segmentation/mask strategy, model bake-off, orchestration platform, issue-per-step program, or governance artifact before the current DIRECTV delivery package completes.
 
-**Current product proof = one source-guided standalone DIRECTV portrait candidate.**
+The current bounded operation is the **complete DIRECTV reconstruction delivery package**, not one mask, one patch, or one intermediate candidate.
 
-If that candidate fails, the failure may authorize exactly one bounded correction based on the observed defect. It does not authorize a new architecture program.
+Internal deterministic steps may iterate inside the package. Stop only at the package acceptance gate or a genuine unresolved blocker.
 
 ## Repository and current state
 
 - Repository: `https://github.com/jimmarkunas/figma-layer-decomposer`
 - Default branch: `main`
-- Main before this canon repair: `ed4e3b86ec942375519d99016d9cd02fb688f3f3`
 - Local repository: `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer`
 - Current reference: DIRECTV hero, `1586 × 992`
-- Current implementation issue: **#11 — PR-1B — Produce source-guided reconstructed DIRECTV portrait candidate**
-- Superseded clean-plate issue #4: **CLOSED / NOT PLANNED**
-- Mask-first issues #8 and #9: **CLOSED / superseded**
-- PR-1 issue #10: **COMPLETE WITH AUTOMATED FAIL** — deterministic affine alignment was insufficient
-- Current execution state: **PR-1B ACTIVE — no approved portrait artifact yet**
+- Current product state: **DIRECTV E2E RECONSTRUCTION ACTIVE**
+- Current package exit: **`PROMOTION_READY` candidate**
+- Issue #11 / PR-1B is superseded by the accepted current state and is not the active execution contract.
 
-## Current accepted portrait facts
+Known local working-tree facts from the current session:
 
-Pinned source identity/reference:
+- `decomposer/directv_pr2_qa.py` contains an unrelated local modification and must remain untouched unless Jim explicitly expands scope.
+- local `input/` source material may be untracked; its presence is not by itself a blocker and it must not be committed wholesale without explicit scope.
 
-- `jimmarkunas/portfolio`
+## Immutable visual target
+
+- `input/directv-hero-01/master.png`
+- canvas `1586 × 992`
+- SHA-256 `d5a66264cc44c449f0e29d045d729c81fe51564b768b371fd9544b34b60f22e6`
+
+The immutable master remains the visual acceptance authority and must never be mutated.
+
+## Portrait state
+
+Pinned related identity/source reference remains:
+
+- repository `jimmarkunas/portfolio`
 - pinned commit `5af5f3191cdbd26cef48d3290fa1e979b04f0a73`
 - `public/jim/hero-jim-01-cutout-v2.png`
 - SHA-256 `06294961581f4fd3a0b08dae8af3eacf7c05e2efb3d61fe72fb517abe2995100`
 
-Immutable visual target:
+PR-1 proved deterministic affine alignment of that website portrait is insufficient. Do not continue affine tuning.
 
-- `input/directv-hero-01/master.png`
-- `1586 × 992`
-- SHA-256 `d5a66264cc44c449f0e29d045d729c81fe51564b768b371fd9544b34b60f22e6`
+Jim has accepted the current **LOCK #5** portrait result as the portrait basis for continuation. The exact local LOCK #5 asset/path/bytes must be resolved and hash-verified before production use; inability to resolve the accepted asset is a genuine blocker.
 
-Portrait geometry:
+The Figma node `191:5 — Portrait / Jim — TRUE CUTOUT (toggleable)` is **REJECTED AS A SOURCE ASSET** in its current state. Direct inspection shows that it reveals TV/environment/sky/floor pixels and therefore is not a clean standalone portrait. Do not treat that Figma node as portrait truth merely because of its name.
 
-- target core: `x=620 y=78 w=382 h=717`
-- QA zone: `x=596 y=54 w=430 h=765`
-- TV core: `x=913 y=413 w=544 h=397`
-- Phone core: `x=791 y=532 w=132 h=280`
-
-The website portrait is a valid related source but is not pixel-identical to the approved DIRECTV portrait. PR-1 proved a deterministic affine transform is insufficient: its single candidate failed automated visible-region fidelity QA. Do not continue affine tuning.
-
-The portrait implementation classification is therefore **`REBUILD_RASTER_FROM_SOURCE`** for the complete standalone portrait: use the pinned website portrait as identity/source reference and the immutable DIRECTV master as the visible target. Newly synthesized portrait content is permitted only where TV/phone occlusion hides portrait pixels required for the complete standalone layer.
-
-## PR-1B execution contract
-
-Issue #11 is the bounded execution contract for the active operation.
-
-Produce exactly one complete portrait RGBA candidate and evidence package under one run-specific `runs/` directory:
-
-- `portrait-candidate.png`
-- `portrait-aligned-preview.png`
-- `portrait-master-overlay.png`
-- `portrait-visible-diff.png`
-- `portrait-alpha.png`
-- `report.json`
-
-The report must identify the exact reconstruction method/tool/model, pinned source/provenance, master and candidate hashes, deterministic placement, visible-region comparison, hidden-region designation, automated gate, `human_gate = PENDING`, and `promotion_status = NOT_PROMOTED`.
-
-Fail closed if the master changes, provenance is missing, the output is not complete RGBA with transparency, device/UI/environment pixels contaminate the portrait, visible fidelity materially diverges, more than one candidate is generated, or work proceeds into background reconstruction/Figma mutation.
-
-Stop after the one candidate and evidence package. Human review decides the next stage.
-
-## Explicit PR-1B non-scope
-
-Do not:
-
-- generate a second candidate;
-- run a prompt/model sweep;
-- restart GrabCut/semantic/matting/removal-mask experiments;
-- perform clean-plate/background reconstruction;
-- extract or rebuild TV/phone;
-- mutate Figma;
-- promote any asset;
-- redesign or beautify the portrait;
-- create another architecture/checkpoint/governance document.
+Use the accepted LOCK #5 asset as the portrait basis and replace/correct the Figma portrait implementation accordingly.
 
 ## Accepted broader decomposition boundary
 
-Source-first recovery remains mandatory. The prior SR work established these broad implementation directions:
+Source-first recovery remains mandatory. Accepted implementation directions are:
 
-- visible background pixels remain immutable-master pixels;
-- hidden background pixels may be reconstructed only where approved foreground removal exposes genuinely hidden content;
-- TV/phone visible raster content is handled separately from hidden-background reconstruction;
-- header/navigation, hero copy/CTA, metrics, wall message/divider, process strip, and bottom signature are intended as native editable Figma content;
+- visible background pixels remain immutable-master pixels wherever possible;
+- hidden background pixels may be reconstructed only where foreground removal exposes genuinely hidden content;
+- portrait, TV, and phone must exist as independent foreground assets/layers;
+- header/navigation, hero copy/CTA, metrics, wall message/divider, process strip, and bottom signature are native editable Figma content;
 - foreground extraction/rebuild and hidden-background reconstruction are separate operations;
-- the rejected GrabCut/semantic/mask-first portrait paths remain rejected.
+- rejected GrabCut/semantic/mask-first portrait paths remain rejected;
+- the existing clean-plate engine remains valid fallback infrastructure rather than the default product architecture.
 
-The existing clean-plate engine remains valid fallback infrastructure. It is not the current portrait solution.
+## Current reconstruction authorization
 
-## Figma destinations
+Jim explicitly authorizes the current DIRECTV end-to-end delivery package to reconstruct genuinely hidden **environment/background** pixels required to produce an independent background and faithful final recomposition.
 
-Reconstruction workspace:
+This authorization is bounded by all of the following:
 
-- `https://www.figma.com/design/3ZYkEtZVyRH9B2DfVpersf/JM-Personal-Brand-V2?node-id=240-4`
-- reference frame `240:4 — 00_Master_Reference`
-- editable frame `240:5 — Editable Master Reference 01 — Layered`
+- source recovery/provenance work already completed for DIRECTV does not need to be re-run merely to satisfy historical stage sequencing;
+- reconstruction applies only to environmental pixels genuinely hidden by foreground content or contaminated temporary repairs;
+- exact visible master pixels must be preserved wherever they are available and suitable;
+- reconstruction must stay inside verified foreground occupancy/removal geometry or another explicitly documented bounded repair region;
+- exact foreground occupancy may be derived from the accepted standalone raster asset or the actual verified native Figma foreground node; producing that derived mask is implementation work and does not require a separate task-specific execution-contract document;
+- no rejected portrait masks become geometry authority;
+- no whole-image reinterpretation or redesign;
+- automated guards and human full-frame visual QA remain required before `PROMOTION_READY`;
+- deterministic defects found during the package must be corrected inside the same package instead of returned as a new micro-stage.
 
-Accepted top-level groups:
+Absence of a pre-existing derived mask, intermediate patch, or duplicate repo-side visual spec is **not** a blocker when it can be deterministically derived from an accepted foreground asset/native layer during this authorized package.
 
-- `00_MASTER_REFERENCE`
-- `01_BACKGROUND`
-- `02_PORTRAIT`
-- `03_DEVICES`
-- `04_HEADER`
-- `05_HERO_COPY`
-- `06_METRICS`
-- `07_WALL_MESSAGE`
-- `08_PROCESS_STRIP`
-- `09_BOTTOM_SIGNATURE`
+## Active Figma workspace
 
-Canonical Personal Brand Figma / promotion destination:
+File:
 
-- `https://www.figma.com/design/euxFg8XeKtFJRw7PWOJRWa/JM-Personal-Brand`
+- `https://www.figma.com/design/3ZYkEtZVyRH9B2DfVpersf/JM-Personal-Brand-V2?node-id=155-63`
+- file key `3ZYkEtZVyRH9B2DfVpersf`
 
-The staging file is not a second design-system authority.
+Current active reconstruction workspace:
+
+- page `155:63 — 999 - Test 2`
+- workspace section `160:2 — DIRECTV / Reconstruction Workspace`
+- immutable reference `160:3 — DIRECTV / REFERENCE — LOCKED`
+- editable production target `160:4 — DIRECTV / PRODUCTION — EDITABLE`
+
+The older page/frame pair:
+
+- `240:4 — 00_Master_Reference`
+- `240:5 — Editable Master Reference 01 — Layered`
+
+is **historical staging and not the active DIRECTV target**. Do not use its empty groups to infer that current native reconstruction is missing.
+
+### Current verified Figma facts
+
+`160:4` already contains native/editable foreground for the major text/UI system, including the `162:*` header/hero/CTA/proof/system nodes plus editable wall quote `195:5` and divider `195:6`.
+
+Preserve that native reconstruction unless full-frame comparison shows a specific material defect.
+
+Known current visual defects include:
+
+- large incorrect central dark/background slab;
+- contaminated/incorrect environmental repair geometry;
+- rejected contaminated portrait implementation at `191:5`;
+- wall/background repair that requires faithful environmental continuation;
+- raster/background seam and z-order verification around TV/phone.
+
+The product task is therefore background/environment repair + correct independent raster foreground + final recomposition/QA, not another native-UI rebuild program.
+
+## Current DIRECTV delivery package
+
+Execute as one bounded package:
+
+1. Inspect `160:3` and `160:4` and current local accepted assets.
+2. Resolve/hash-verify the accepted LOCK #5 portrait asset.
+3. Replace/correct the rejected contaminated Figma portrait implementation using the accepted asset.
+4. Preserve/verify TV and phone as independent foreground assets; correct deterministic crop/alpha/z-order leakage if found.
+5. Derive exact occupancy/removal geometry from verified foreground assets/native Figma layers as needed.
+6. Reconstruct only the hidden environmental/background pixels needed for an independent clean background.
+7. Remove or supersede temporary/contaminated repair layers that visibly break the composition.
+8. Preserve existing native editable UI/text/vector content unless a specific visual defect requires a narrow correction.
+9. Recompose the entire slide.
+10. Render and compare `160:4` against immutable reference `160:3`.
+11. Correct deterministic visual defects inside the same package.
+12. Verify layer independence/editability and immutable-master integrity.
+13. Exit as `PROMOTION_READY` candidate only after required automated evidence and human full-frame visual QA pass.
+
+No Jim manual download/upload/rename/move step should be introduced for intermediate assets when available integrations/local tooling can perform the transfer directly.
+
+## Genuine blockers
+
+A `BLOCKED` result is valid when the package cannot safely continue because of an unresolved external or source-of-truth problem, for example:
+
+- the accepted LOCK #5 asset cannot be located or hash-verified;
+- required immutable source bytes are unavailable;
+- Figma write access to the active target is unavailable;
+- two explicit current requirements are mutually impossible;
+- overlapping unexplained local changes make the intended mutation unsafe.
+
+These are not blockers by themselves:
+
+- an intermediate mask/patch does not already exist;
+- a derived occupancy mask has not been separately approved;
+- an internal candidate needs correction;
+- existing native Figma nodes do not have duplicate repo-side specs;
+- known unrelated local changes can be safely preserved outside the mutation surface.
+
+## Figma layer outcome required for DIRECTV
+
+The final editable composition must provide independent/toggleable roles equivalent to:
+
+- background/environment;
+- portrait;
+- TV/device;
+- phone/device;
+- header/nav;
+- hero copy/CTA;
+- metrics/proof;
+- wall message;
+- process/system strip;
+- bottom signature/footer.
+
+Exact final node naming may follow the already-built `160:4` structure. Do not create a second permanent design system in the staging file.
 
 ## Promotion boundary
 
@@ -153,7 +237,15 @@ The Decomposer stops at `PROMOTION_READY`:
 
 `RECONSTRUCTION_ACTIVE → PROMOTION_READY → PBDS PROMOTED → CONSUMABLE`
 
-`PROMOTION_READY` requires a genuinely editable DIRECTV composition, full-frame human visual acceptance against the immutable master, required automated QA, linked provenance, exact staging Figma/frame identification, and enough layer-role description for PBDS to evaluate reuse.
+`PROMOTION_READY` requires:
+
+- a genuinely editable DIRECTV composition;
+- independent raster/background roles required for reuse;
+- full-frame human visual acceptance against the immutable master;
+- required automated reconstruction/fidelity QA;
+- linked provenance and accepted asset evidence;
+- exact staging Figma/frame identification;
+- enough layer-role description for PBDS to evaluate reuse.
 
 PBDS owns canonical Figma promotion, reusable-template/component definition, semantic content contract, React consumption, editable PowerPoint consumption, and later template generalization.
 
@@ -174,34 +266,24 @@ Do not generalize mock-ups #2–#6 until DIRECTV reaches `PROMOTION_READY` and P
 - EX-0 deterministic extraction engine — COMPLETE
 - mask-first portrait strategies — REJECTED/SUPERSEDED
 - PR-1 source-guided affine portrait proof — COMPLETE WITH AUTOMATED FAIL
-
-## Active sequence
-
-1. **PR-1B — ACTIVE:** produce exactly one source-guided reconstructed portrait candidate.
-2. Human visual review of that one candidate.
-3. If accepted, derive authoritative portrait occupancy/alpha from the approved portrait asset.
-4. Resume only the bounded DIRECTV raster/background work needed for the editable composition.
-5. Rebuild native text/UI/vector content in Figma.
-6. Full-frame 1:1 DIRECTV visual acceptance.
-7. Emit `PROMOTION_READY` handoff to PBDS.
-
-No new milestone may be inserted between steps 1 and 2 unless PR-1B itself proves a concrete blocker.
+- PR-1B historical portrait-candidate phase — SUPERSEDED by Jim's accepted LOCK #5 continuation state
 
 ## Current next step
 
-**Execute Issue #11. Produce the portrait.**
+**Complete the current DIRECTV end-to-end reconstruction package against `160:3 / 160:4` and prove the `PROMOTION_READY` candidate.**
 
-No additional documentation/architecture package is the next step.
+Do not insert another roadmap, architecture, mask-approval, or micro-stage package in front of that work.
 
 ## Continuity protocol
 
 At the start of a new implementation session:
 
-1. Read this file from current `main`.
-2. Read the active GitHub issue (#11 while PR-1B remains active).
-3. Read only the exact implementation surface required by that issue.
-4. Confirm repository root, fresh main, clean tree, and bounded mutation surface.
-5. Execute one bounded product operation and prove it.
-6. Stop.
+1. Read this file from current branch/main.
+2. Read `AGENTS.md`.
+3. Read only the implementation contracts needed for the current package surface.
+4. Confirm repository root, branch, working-tree state, active Figma target, and immutable master hash.
+5. Classify existing local changes as overlapping vs. known unrelated; preserve unrelated changes without using them as a generic blocker.
+6. Execute the bounded DIRECTV delivery package through its acceptance gate.
+7. Stop at package completion or a genuine blocker.
 
-Update this canon only when the accepted product state or active next operation actually changes.
+Update this canon only when the accepted product state, active target, or product boundary actually changes.
