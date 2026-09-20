@@ -5,3 +5,4 @@ __pycache__/
 .DS_Store
 input/**/master.png
 runs/
+*.egg-info/
