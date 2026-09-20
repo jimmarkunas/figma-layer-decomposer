@@ -31,18 +31,38 @@ When sources conflict, use this order:
 
 Never infer approval from the existence of an artifact.
 
+## Source-first decomposition gate
+
+Before extraction, masking, inpainting, or other clean-plate reconstruction for any layer:
+
+1. Read `docs/SOURCE_ASSET_RECOVERY.md`.
+2. Attempt source-asset recovery in the approved search order.
+3. Verify candidate provenance/alignment against the immutable master.
+4. Classify the layer as exactly one of:
+   - `RECOVER_SOURCE`
+   - `EXTRACT_FROM_MASTER`
+   - `REBUILD_NATIVE`
+   - `RECONSTRUCT_HIDDEN_PIXELS`
+5. Do not run reconstruction unless the layer is explicitly classified `RECONSTRUCT_HIDDEN_PIXELS` and the reason source recovery was insufficient is recorded.
+
+Clean-plate reconstruction is a fallback capability, not the default decomposition strategy.
+
+If source strategy is unresolved, stop and report `BLOCKED` rather than adding more masking/reconstruction tooling.
+
 ## Execution rules
 
 - One bounded operation → validate → stop.
 - Do not skip roadmap stages or repair a failed earlier stage in a later stage.
 - Preserve untouched source pixels exactly wherever possible.
-- Clean-plate reconstruction happens outside Figma.
+- Prefer exact recovered source assets over extraction; prefer extraction over reconstruction when the required pixels already exist in the immutable master.
+- Clean-plate reconstruction happens outside Figma and only after the source-recovery gate authorizes it.
 - Figma is the destination/composition layer, not the raster reconstruction engine.
 - Never overwrite or mutate the immutable master PNG.
 - Generated candidates, previews, diffs, reports, masks, and temporary outputs must remain separate from source assets.
 - Do not use generative image tooling for approved clean-plate reconstruction.
 - No Figma promotion until automated QA and human visual QA pass.
-- Fail closed when preconditions, bounds, masks, coordinates, or QA state are uncertain.
+- Fail closed when provenance, preconditions, bounds, masks, coordinates, or QA state are uncertain.
+- Do not optimize or generalize a fallback technique before proving that the fallback is actually required for the layer.
 
 ## Verification rules
 
@@ -56,10 +76,8 @@ Current reference: DIRECTV hero, `1586 × 992`.
 
 Current milestone: `M3 Background`.
 
-Current implementation package: `3B.1 — deterministic clean-plate engine`.
-
-Cleanup is cumulative:
+Cleanup, when reconstruction is actually authorized, is cumulative:
 
 `Portrait → TV → Phone → Wall slogan → Wall underline`
 
-For current roadmap state, branch, coordinates, and next action, defer to `docs/PROJECT_CANON.md` rather than duplicating mutable project state here.
+For current roadmap state, branch, coordinates, source-recovery status, and next action, defer to `docs/PROJECT_CANON.md` rather than duplicating mutable project state here.

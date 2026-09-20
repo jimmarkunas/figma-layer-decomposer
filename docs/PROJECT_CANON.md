@@ -26,21 +26,24 @@ Turn approved flat mock-up PNGs into genuinely editable layered Figma compositio
 - Do not redesign, reinterpret, beautify, or improve approved mock-ups.
 - Preserve untouched source pixels exactly wherever possible.
 - Use a hybrid decomposition model: photographic/environmental content stays raster; editable text/UI/vectors are rebuilt natively in Figma.
+- **Source recovery comes before extraction or reconstruction.** Recover and verify exact original assets whenever possible.
+- Clean-plate reconstruction is a fallback for genuinely hidden pixels that cannot be recovered from a trustworthy source asset.
 - Clean-plate reconstruction happens outside Figma using the `figma-layer-decomposer` pipeline.
 - Figma is the destination and composition layer, not the raster-reconstruction engine.
-- Every raster layer must have deterministic coordinates and a machine-readable manifest.
+- Every raster layer must use deterministic coordinates and a machine-readable manifest.
 - No Figma upload or promotion occurs until automated QA and human visual QA pass.
 - Later steps may not repair failed earlier steps.
 - Work incrementally: one bounded operation → validate → stop.
-- Prefer deterministic scripting, masks, pixel diffs, and repeatable tooling over manual approximation.
-- Use Codex for bounded local implementation tasks involving image processing, tests, manifests, file operations, and automation.
-- Use ChatGPT for architecture, decomposition strategy, acceptance criteria, Figma QA, and technical review.
+- Prefer deterministic scripting, exact source recovery, masks, pixel diffs, and repeatable tooling over manual approximation.
+- Use Codex for bounded local implementation tasks involving asset inventory, image processing, tests, manifests, file operations, and automation.
+- Use ChatGPT for architecture, decomposition strategy, acceptance criteria, source/provenance review, Figma QA, and technical review.
 
 ## Repository
 
 - Repository: `https://github.com/jimmarkunas/figma-layer-decomposer`
 - Default branch: `main`
-- Current implementation branch: `main` (3B.1 merged; 3B.2 branch not yet created)
+- Current implementation branch: `feature/3b2-directv-portrait-candidate` — PAUSED pending source-recovery gate
+- Current implementation issue: `#4 — 3B.2 — Generate DIRECTV portrait clean-plate candidate` — PAUSED pending source-recovery gate
 - Completed implementation issue: `#1 — 3B.1 — Implement deterministic clean-plate pipeline`
 - Local repository path: `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer`
 - Product status: standalone product inside the shared Jim development workspace.
@@ -73,6 +76,28 @@ Top-level groups inside the editable frame:
 - `08_PROCESS_STRIP`
 - `09_BOTTOM_SIGNATURE`
 
+## Source-first decomposition gate
+
+`docs/SOURCE_ASSET_RECOVERY.md` defines the mandatory operating procedure before extraction or clean-plate reconstruction.
+
+Every material layer must be classified as exactly one of:
+
+- `RECOVER_SOURCE`
+- `EXTRACT_FROM_MASTER`
+- `REBUILD_NATIVE`
+- `RECONSTRUCT_HIDDEN_PIXELS`
+
+No mask generation, inpainting, semantic segmentation, texture synthesis, or clean-plate candidate run is authorized until source recovery has been attempted and the relevant layer is explicitly classified `RECONSTRUCT_HIDDEN_PIXELS`.
+
+The mandatory gate is:
+
+- **SR-1 — Source asset inventory** — inspect Figma raw/image assets, current-repo assets, explicitly authorized related repositories, and other approved source locations.
+- **SR-2 — Provenance / exact-match verification** — verify candidate assets against the immutable master using hashes, pixel alignment, deterministic transforms, and/or Figma provenance.
+- **SR-3 — Per-layer decomposition classification** — assign one approved implementation method to every material layer.
+- **SR-4 — Decomposition-plan approval** — review the inventory/classification and explicitly authorize any `RECONSTRUCT_HIDDEN_PIXELS` work before reconstruction resumes.
+
+If the source strategy is unresolved, stop `BLOCKED` rather than increasing fallback-tool complexity.
+
 ## Completed work
 
 ### M2 — Structure
@@ -88,12 +113,22 @@ Top-level groups inside the editable frame:
 - 3A — Define exact removal geometry — PASS
 - 3A.1 — Remove unapproved wall cleanup patches — PASS
 - 3B.0 — Canonical clean-plate contract + repo bootstrap — COMPLETE
-- 3B.1 — Deterministic clean-plate engine — COMPLETE
-- 3B.2 — Generate DIRECTV portrait clean-plate candidate — NEXT
+- 3B.1 — Deterministic clean-plate engine — COMPLETE as reusable fallback subsystem
+- 3B.2 — Generate DIRECTV portrait clean-plate candidate — PAUSED pending SR-1 through SR-4
+
+### Corrective findings
+
+- The initial 3B.2 GrabCut portrait-mask candidate failed human visual review and is REJECTED.
+- The failed GrabCut mask remains unapproved and must not be promoted or used for production reconstruction.
+- A semantic-segmentation replacement is NOT the next authorized step.
+- The architectural error was treating clean-plate reconstruction as the default path before proving source recovery was insufficient.
+- 3B.1 remains valid infrastructure; its role is fallback reconstruction only.
 
 ## Approved DIRECTV removal geometry
 
 All coordinates are relative to the 1586 × 992 master.
+
+These bounds are reconstruction limits only. They do not, by themselves, authorize reconstruction; SR-4 must authorize the layer first.
 
 ### Portrait
 
@@ -129,21 +164,23 @@ Approved reconstruction zone: `x=1036 y=314 w=110 h=53`
 
 ## Cumulative cleanup rule
 
-The cleanup sequence is cumulative:
+When reconstruction stages are actually authorized, cleanup is cumulative:
 
 `Portrait → TV → Phone → Wall slogan → Wall underline`
 
-Later stages consume the approved output of the prior stage. Do not generate unrelated independent patches from the original master and stack them.
+Later reconstruction stages consume the approved output of the prior authorized reconstruction stage. Do not generate unrelated independent patches from the original master and stack them.
+
+Source recovery may eliminate some reconstruction stages entirely.
 
 ## Automated QA requirements
 
-At minimum:
+For any authorized reconstruction stage, at minimum:
 
 - validate manifest schema
 - validate canvas dimensions
 - validate bounds
 - validate masks
-- zero changed pixels outside approved reconstruction zone
+- prove zero changed pixels outside the approved reconstruction zone
 - output dimensions equal source dimensions
 - emit candidate image
 - emit preview image
@@ -177,26 +214,36 @@ At minimum:
 
 The shared VS Code environment may contain multiple sibling repositories, but this project must treat only `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer` as its writable project root. `/Users/jimmarkunas/Development/Jim` and `~/Development` are workspace/container directories only and must not become Git repositories or shared mutation roots. Repo-local `AGENTS.md` defines mandatory agent preflight and cross-repository boundaries. Shared extensions and MCP availability may live at the VS Code environment/profile level; Git state, dependencies, Python environments, project guardrails, and execution remain repository-local.
 
-## Pipeline roadmap
+## Corrected pipeline roadmap
 
-- 3B.1 — Deterministic clean-plate engine — COMPLETE
-- 3B.2 — Generate DIRECTV portrait clean-plate candidate — NEXT
-- 3B.3 — Automated QA
+- M2 — Structure — COMPLETE
+- 3A — Removal geometry — PASS
+- 3A.1 — Remove unapproved wall patches — PASS
+- 3B.0 — Clean-plate contract + repo bootstrap — COMPLETE
+- 3B.1 — Deterministic clean-plate engine — COMPLETE as fallback infrastructure
+- **SR-1 — Source asset inventory — NEXT**
+- SR-2 — Provenance / exact-match verification
+- SR-3 — Per-layer decomposition classification
+- SR-4 — Decomposition-plan approval gate
+- 3B.2 — Generate DIRECTV portrait clean-plate candidate — RESUME ONLY if portrait/background hidden pixels are classified `RECONSTRUCT_HIDDEN_PIXELS`
+- 3B.3 — Automated unchanged-region QA
 - 3B.4 — Human visual QA
 - 3B.5 — Push approved clean plate into Figma
-- 3C — TV removal
-- 3D — Phone removal
-- 3E — Wall slogan removal
-- 3F — Wall underline removal
+- 3C — TV removal — only if reconstruction remains necessary after SR
+- 3D — Phone removal — only if reconstruction remains necessary after SR
+- 3E — Wall slogan removal — reconstruction/native method determined by SR classification
+- 3F — Wall underline removal — reconstruction/native method determined by SR classification
 - 3G — Full clean-background QA
 - 3H — Final approved background
-- 4A–4F — Portrait extraction + QA
-- 5A–5I — Device extraction + QA
-- P1–P4 — Generalize and package for mock-ups #2–#6
+- 4A–4F — Portrait recovery/extraction + QA according to SR classification
+- 5A–5I — Device recovery/extraction + QA according to SR classification
+- P1–P4 — Generalize and package for mock-ups #2–#6, preserving the source-first gate
 
 ## Current next step
 
-`3B.2 — Generate DIRECTV portrait clean-plate candidate.`
+`SR-1 — Source asset inventory for the DIRECTV reference.`
+
+Do not generate another portrait mask or clean-plate candidate before SR-1 through SR-4 are complete.
 
 ## Continuity protocol
 
@@ -204,8 +251,9 @@ At the start of any new ChatGPT or Codex session:
 
 1. Read `docs/PROJECT_CANON.md` from `main`.
 2. Read `README.md`.
-3. Read `docs/CLEAN_PLATE_CONTRACT.md` when working on M3 clean-plate implementation.
-4. Confirm current Git root, branch, working-tree status, issue, and roadmap before editing.
-5. Perform one bounded operation, validate it, then stop.
+3. Read `docs/SOURCE_ASSET_RECOVERY.md` before any extraction or reconstruction decision.
+4. Read `docs/CLEAN_PLATE_CONTRACT.md` only when a layer has been authorized for reconstruction.
+5. Confirm current Git root, branch, working-tree status, issue, and roadmap before editing.
+6. Perform one bounded operation, validate it, then stop.
 
-Update this file whenever the accepted roadmap state, next step, canonical coordinates, or source-of-truth locations materially change.
+Update this file whenever the accepted roadmap state, next step, canonical coordinates, source-recovery state, or source-of-truth locations materially change.
