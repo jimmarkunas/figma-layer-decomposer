@@ -1,0 +1,133 @@
+{
+  "canvas_dimensions": [
+    1586,
+    992
+  ],
+  "master": {
+    "path": "handoff/directv/authoritative/master.png",
+    "sha256": "d5a66264cc44c449f0e29d045d729c81fe51564b768b371fd9544b34b60f22e6",
+    "provenance": "Immutable DIRECTV master; local canonical input/directv-hero-01/master.png"
+  },
+  "authoritative_sources": [
+    {
+      "path": "handoff/directv/authoritative/portrait-lock5.png",
+      "semantic_role": "Portrait foreground alpha",
+      "dimensions": [
+        1048,
+        1501
+      ],
+      "sha256": "50a24aa6ccffd5ea99e1d7c4247786830666530a09a051f2eb0163ce3fab8326",
+      "provenance": "Accepted LOCK #5 asset; Figma node 278:2",
+      "source_figma_node": "278:2",
+      "placement": {
+        "x": 580.8200073242188,
+        "y": 59.880001068115234,
+        "w": 513.260009765625,
+        "h": 734.8800048828125
+      }
+    },
+    {
+      "path": "handoff/directv/authoritative/tv-cutout.png",
+      "semantic_role": "TV foreground alpha mask",
+      "dimensions": [
+        533,
+        407
+      ],
+      "sha256": "a1cec369c48f65b25d5b9ccbfa1d3f5674af9809430bc0a73ef2fa273a8c29b1",
+      "provenance": "Exact Figma-exported alpha mask SVG rasterized deterministically",
+      "source_figma_node": "236:16",
+      "parent_figma_node": "161:14",
+      "placement": {
+        "x": 941,
+        "y": 437,
+        "w": 533,
+        "h": 407
+      }
+    },
+    {
+      "path": "handoff/directv/authoritative/phone-cutout.png",
+      "semantic_role": "Phone foreground alpha mask",
+      "dimensions": [
+        126,
+        282
+      ],
+      "sha256": "76cc9746be7be79d7fd8da5327829bd4f9943b97285ca3f5e1bdac0793e016d8",
+      "provenance": "Exact Figma-exported alpha mask SVG rasterized deterministically",
+      "source_figma_node": "236:19",
+      "parent_figma_node": "236:18",
+      "placement": {
+        "x": 802,
+        "y": 533,
+        "w": 126,
+        "h": 282
+      }
+    }
+  ],
+  "patches": {
+    "A1": {
+      "semantic_role": "PORTRAIT / CENTRAL CONCRETE",
+      "dimensions": [
+        650,
+        700
+      ],
+      "mask_pixel_count": 121606,
+      "sha256": "08cc475dc7822bdb01abb34c0924c23f860c4cb7fb3622a4e8c3b88878691ebf",
+      "full_canvas_placement": {
+        "x": 480,
+        "y": 0,
+        "w": 650,
+        "h": 700
+      },
+      "status": "CORRECTED_INPUTS_READY"
+    },
+    "A2": {
+      "semantic_role": "PORTRAIT / LOWER FLOOR",
+      "dimensions": [
+        650,
+        312
+      ],
+      "mask_pixel_count": 36203,
+      "sha256": "bc701c0e3ee3292f0f17f0be82310cf5652cead41b2637f012d3001b5f04f683",
+      "full_canvas_placement": {
+        "x": 480,
+        "y": 680,
+        "w": 650,
+        "h": 312
+      },
+      "status": "CORRECTED_INPUTS_READY"
+    },
+    "B1": {
+      "semantic_role": "TV + PHONE / WALL",
+      "dimensions": [
+        650,
+        410
+      ],
+      "mask_pixel_count": 185773,
+      "sha256": "82604ccd1f316ab2211ad3e5ab3b2590c8cb087a1c45dd328d77d84020aa50bd",
+      "full_canvas_placement": {
+        "x": 850,
+        "y": 350,
+        "w": 650,
+        "h": 410
+      },
+      "status": "CORRECTED_INPUTS_READY"
+    },
+    "B2": {
+      "semantic_role": "TV + PHONE / FLOOR",
+      "dimensions": [
+        800,
+        262
+      ],
+      "mask_pixel_count": 56924,
+      "sha256": "20dbdf653a2a63497b4a555d86f889ff28ecef7212314db0126d54bc73494b19",
+      "full_canvas_placement": {
+        "x": 730,
+        "y": 730,
+        "w": 800,
+        "h": 262
+      },
+      "status": "CORRECTED_INPUTS_READY"
+    }
+  },
+  "status": "CORRECTED_INPUTS_READY"
+}
