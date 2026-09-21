@@ -38,17 +38,18 @@ It is not forensic recovery of every unknowable hidden pixel from the flattened 
 
 ## User entry point — canonical happy path
 
-The Decomposer has **one user-facing entry point**: a natural-language request to reconstruct an approved design.
+The Decomposer has **one user-facing entry point: the Figma/Image project chat in ChatGPT**.
 
-The minimum user request is:
+There is **no separate web front end today**. GitHub is an implementation repository, not the user interface. Figma is the output/editing destination, not the place where the user starts the reconstruction request.
 
-> **Rebuild this approved design as an editable Figma composition.**
+The minimum user interaction is:
 
-The user supplies only:
+1. Open the Figma/Image project chat in ChatGPT.
+2. Upload the approved PNG/JPG **or** paste/link the Figma reference frame/node.
+3. Provide the target Figma file/page/frame, or say to create a new reconstruction frame.
+4. Say: **Rebuild this approved design as an editable Figma composition.**
 
-1. **Source design** — an uploaded PNG/JPG or an existing Figma reference frame/node.
-2. **Target Figma destination** — existing Figma file/page/frame, or permission to create a new reconstruction frame.
-3. **Optional source hints** — links/files for known portraits, product/device assets, logos, or other authoritative source material. These are optional; their absence does not require the user to manage the reconstruction workflow.
+Optional source hints may also be supplied for known portraits, product/device assets, logos, or other authoritative source material. These are optional; their absence does not require the user to manage the reconstruction workflow.
 
 Everything else is internal implementation detail.
 
@@ -91,7 +92,7 @@ If an internal executor needs another executor, the project owns that handoff. J
 
 ### Entry-point acceptance test
 
-For the next non-DIRECTV mockup, success means the user can provide the source design + Figma destination once, receive a materially complete editable reconstruction, and perform any remaining correction through ordinary visual feedback without being exposed to internal reconstruction mechanics.
+For the next non-DIRECTV mockup, success means Jim can start in the Figma/Image ChatGPT project chat, provide the source design + Figma destination once, receive a materially complete editable reconstruction, and perform any remaining correction through ordinary visual feedback without being exposed to internal reconstruction mechanics.
 
 If the next mockup again requires bespoke user-managed workflow orchestration, the Decomposer has failed its user-entry-point requirement and must be simplified rather than expanded.
 
