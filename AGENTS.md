@@ -7,14 +7,15 @@ Repository: `jimmarkunas/figma-layer-decomposer`
 Before any mutation:
 
 1. Read `docs/PROJECT_CANON.md`.
-2. Read `docs/EXECUTION_CONTRACT.md` when it exists for the active package.
-3. Confirm the active Git root is this repository with `git rev-parse --show-toplevel`.
-4. Confirm active branch and working-tree status.
-5. If the Git root is not this repository, stop and report `BLOCKED`.
-6. If the working tree contains changes, classify them:
+2. Read `docs/DECOMPOSITION_FIRST_VISUAL_ARCHITECTURE_CONTRACT.md` for the shared new/legacy layered-composition architecture.
+3. Read `docs/EXECUTION_CONTRACT.md` when it exists for the active package.
+4. Confirm the active Git root is this repository with `git rev-parse --show-toplevel`.
+5. Confirm active branch and working-tree status.
+6. If the Git root is not this repository, stop and report `BLOCKED`.
+7. If the working tree contains changes, classify them:
    - overlapping/unexplained changes inside the intended mutation surface are a blocker;
    - known unrelated changes must be preserved and left untouched, but are not by themselves a blocker.
-7. Do not treat `~/Development` or a multi-root VS Code workspace as the project root.
+8. Do not treat `~/Development` or a multi-root VS Code workspace as the project root.
 
 ## Canonical authority
 
@@ -23,11 +24,12 @@ When sources conflict, use this order:
 1. Jim's explicit current instruction in the active session.
 2. Immutable master PNG for visual acceptance.
 3. `docs/PROJECT_CANON.md` for current accepted product state.
-4. `docs/EXECUTION_CONTRACT.md` for the active task's inputs, tool policy, candidate limit, QA and promotion state.
-5. `docs/CLEAN_PLATE_CONTRACT.md` only when the current execution contract explicitly puts hidden-background reconstruction in scope.
-6. `schema/layer-manifest.schema.json` for machine-readable placement/QA contracts.
-7. Active GitHub issue text only when `docs/PROJECT_CANON.md` explicitly names it as the current delivery package.
-8. Notion / ChatGPT Project copies as pointers only.
+4. `docs/DECOMPOSITION_FIRST_VISUAL_ARCHITECTURE_CONTRACT.md` for shared decomposition-first architecture, including the legacy full-background exception and mask rule.
+5. `docs/EXECUTION_CONTRACT.md` for the active task's inputs, tool policy, candidate limit, QA and promotion state.
+6. `docs/CLEAN_PLATE_CONTRACT.md` only when the current execution contract explicitly puts hidden-background reconstruction in scope.
+7. `schema/layer-manifest.schema.json` for machine-readable placement/QA contracts.
+8. Active GitHub issue text only when `docs/PROJECT_CANON.md` explicitly names it as the current delivery package.
+9. Notion / ChatGPT Project copies as pointers only.
 
 Never infer approval from the mere existence of an artifact.
 
