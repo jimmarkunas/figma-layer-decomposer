@@ -11,11 +11,12 @@ When sources conflict:
 1. Jim's explicit current instruction.
 2. Immutable master/reference image for visual acceptance.
 3. This file for current accepted product state and architecture.
-4. `docs/BRIDGE_CONTRACT.md` when BRIDGE-1 or the user-entry-point backend is in scope.
-5. `docs/EXECUTION_CONTRACT.md` for the active DIRECTV reconstruction package.
-6. Other generic implementation contracts only when explicitly invoked by the active package.
-7. Machine-readable schemas/manifests.
-8. Historical issues, old handoffs, rejected artifacts and prior chat plans.
+4. `docs/DECOMPOSITION_FIRST_VISUAL_ARCHITECTURE_CONTRACT.md` for shared visual source-state classification and decomposition architecture.
+5. `docs/BRIDGE_CONTRACT.md` when BRIDGE-1 or the user-entry-point backend is in scope.
+6. `docs/EXECUTION_CONTRACT.md` for the active DIRECTV reconstruction package.
+7. Other generic implementation contracts only when explicitly invoked by the active package.
+8. Machine-readable schemas/manifests.
+9. Historical issues, old handoffs, rejected artifacts and prior chat plans.
 
 Do not infer approval from the existence of an artifact.
 
@@ -32,6 +33,19 @@ Canonical layer model:
 5. **Layer 05 — Editable UI / Typography**
 
 The product goal is **faithful + editable + reusable layered composition**. It is not forensic recovery of every unknowable hidden pixel.
+
+## Mandatory source-state semantics
+
+Classification is based on the authoritative source state, not the age of the design.
+
+- `DECOMPOSITION_FIRST` means a clean background and independent component assets exist, or are being created independently before final composition.
+- `FLATTENED_REFERENCE` means the authoritative starting point is an already-composed raster/reference image and no canonical independent layer package exists, regardless of whether the image is old or newly generated.
+
+An uploaded, linked, or approved final image is the immutable **visual reference**. It is **not Layer 01** and it is **not evidence that a clean background exists**.
+
+When `SOURCE STATE = FLATTENED_REFERENCE` and no recoverable clean plate exists, rebuild one complete independent Layer 01 background and then recompose the remaining independent layers against the immutable reference.
+
+Never infer `DECOMPOSITION_FIRST` from phrases such as `new design`, `current rebrand`, `recent concept`, or similar chronological language.
 
 ## Canonical user entry point
 
