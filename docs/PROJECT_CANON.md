@@ -36,6 +36,65 @@ The product goal is **faithful + editable + reusable layered composition**.
 
 It is not forensic recovery of every unknowable hidden pixel from the flattened source.
 
+## User entry point — canonical happy path
+
+The Decomposer has **one user-facing entry point**: a natural-language request to reconstruct an approved design.
+
+The minimum user request is:
+
+> **Rebuild this approved design as an editable Figma composition.**
+
+The user supplies only:
+
+1. **Source design** — an uploaded PNG/JPG or an existing Figma reference frame/node.
+2. **Target Figma destination** — existing Figma file/page/frame, or permission to create a new reconstruction frame.
+3. **Optional source hints** — links/files for known portraits, product/device assets, logos, or other authoritative source material. These are optional; their absence does not require the user to manage the reconstruction workflow.
+
+Everything else is internal implementation detail.
+
+### Required system behavior
+
+After the request, the system owns the workflow end to end:
+
+1. capture and freeze the approved source as the immutable visual reference;
+2. inspect the source and classify the five canonical layer roles;
+3. recover authoritative source assets when available;
+4. generate/reconstruct missing independent visual layers when necessary;
+5. rebuild text, buttons, navigation, vectors, and other semantic UI natively in Figma;
+6. preserve exact canvas geometry, z-order, and layer independence;
+7. install the reconstruction into the specified Figma destination;
+8. run deterministic QA against the immutable reference;
+9. present the user with a visual review of **reference vs reconstructed composition**;
+10. accept plain-language visual corrections and apply them inside the same reconstruction package;
+11. stop at `PROMOTION_READY` when fidelity and editability are accepted.
+
+### User interaction contract
+
+The user is expected to make only product/visual decisions, for example:
+
+- `Approve.`
+- `The portrait needs more shadow on the right.`
+- `The TV is too large.`
+- `That headline is not aligned with the reference.`
+
+The user must **not** be required to:
+
+- create or approve masks;
+- understand clean-plate stages;
+- edit manifests;
+- run repository commands;
+- manually transfer, rename, reconcile, or re-upload intermediate files;
+- decide which executor/tool should perform an internal substep;
+- coordinate ChatGPT, Codex, Figma, Drive, or image-generation tools manually.
+
+If an internal executor needs another executor, the project owns that handoff. Jim is never middleware.
+
+### Entry-point acceptance test
+
+For the next non-DIRECTV mockup, success means the user can provide the source design + Figma destination once, receive a materially complete editable reconstruction, and perform any remaining correction through ordinary visual feedback without being exposed to internal reconstruction mechanics.
+
+If the next mockup again requires bespoke user-managed workflow orchestration, the Decomposer has failed its user-entry-point requirement and must be simplified rather than expanded.
+
 ## Core architecture
 
 Use the simplest truthful layer strategy:
