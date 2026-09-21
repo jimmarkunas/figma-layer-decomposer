@@ -1,381 +1,428 @@
 # Clean Plate Pipeline Contract
 
-Status: canonical implementation contract for fallback clean-plate reconstruction.
+Status: canonical implementation contract for hidden-background cleanplate reconstruction.
 
-Current package: **3B — Portrait clean plate** for the DIRECTV hero mock-up.
+This contract is reusable across DIRECTV and future mock-ups when source-first decomposition classifies hidden visual pixels as requiring reconstruction.
 
-The same contract must be reusable for TV, phone, wall-message, and future mock-ups when reconstruction is actually required.
+## 0. Source-first prerequisite
 
-## 0. Source-recovery prerequisite
+Cleanplate reconstruction is a fallback capability for pixels that cannot be recovered directly; it is not the default decomposition strategy.
 
-Clean-plate reconstruction is a fallback capability, not the default decomposition strategy.
+Before this contract is used for a region, the project must have a source-first classification showing that one of the following applies:
 
-Before this contract may be used for a layer, the project MUST complete the source-first decomposition gate in `docs/SOURCE_ASSET_RECOVERY.md`.
+- `RECOVER_SOURCE` is unavailable for the hidden pixels;
+- `EXTRACT_FROM_MASTER` cannot reveal pixels that are actually occluded;
+- `REBUILD_NATIVE` is not appropriate because the missing content is visual/environmental rather than semantic UI/text/vector content.
 
-The layer must be explicitly classified `RECONSTRUCT_HIDDEN_PIXELS`, with evidence that exact source recovery was attempted first and was insufficient for the pixels that must be revealed.
+When those conditions hold, the region may be classified for hidden-pixel reconstruction. The current `docs/PROJECT_CANON.md` owns package-level authorization and may explicitly authorize reconstruction without reopening historical stage gates.
 
-If an exact reusable source asset exists, use `RECOVER_SOURCE` instead. If the needed visible pixels are already fully represented in the immutable master and no exact standalone source exists, use `EXTRACT_FROM_MASTER`. Editable text/UI/vector content uses `REBUILD_NATIVE`.
-
-No mask generation, inpainting, texture synthesis, or clean-plate candidate run may begin merely because reconstruction tooling is available.
-
-If source provenance or decomposition classification is unresolved, fail closed and stop.
-
-For the current DIRECTV reference, 3B.2 remains paused until source recovery and per-layer classification are complete.
+No reconstruction method should be inferred merely from the existence of a mask, candidate, donor, or model.
 
 ## 1. Objective
 
-Once reconstruction has been explicitly authorized, given an immutable approved master image, an approved removal mask, and a bounded reconstruction zone, produce a clean-plate candidate that reveals plausible background pixels where the removable foreground object used to be while preserving all pixels outside the approved zone.
+Given an immutable approved master image, verified source-removal geometry, preserve geometry, and bounded reconstruction region, produce an independent clean background that:
 
-This is an image-processing package, not a redesign package.
+- preserves exact visible-source pixels wherever they are already available and suitable;
+- removes foreground contamination attributable to removable objects/content;
+- reconstructs genuinely hidden environmental pixels with visual continuity;
+- records truthful provenance for reconstructed pixels;
+- supports faithful full-frame recomposition with independent foreground layers.
 
-## 2. Inputs
+This is a bounded reconstruction package, not a redesign package.
 
-Required:
+## 2. Approved reconstruction modes
+
+The contract supports two approved execution modes behind a common integration/QA boundary.
+
+### 2.1 `DETERMINISTIC_CLEAN_PLATE`
+
+Use when hidden pixels can be reconstructed with sufficient fidelity from deterministic evidence such as:
+
+- neighboring visible master pixels;
+- donor patches;
+- planar/perspective continuation;
+- deterministic transforms;
+- local texture continuation;
+- patch sampling.
+
+### 2.2 `GENERATE_BOUNDED_CLEANPLATE`
+
+Use when:
+
+- hidden pixels have no recoverable source;
+- deterministic continuation is insufficient to meet visual fidelity;
+- the reconstruction region is bounded and documented;
+- the goal is visual continuity rather than false historical pixel recovery.
+
+The image-generation model owns visual synthesis only. Deterministic tooling still owns masks/bounds, preserve geometry, file integrity, provenance, compositing, Figma placement, and QA.
+
+`GENERATE_BOUNDED_CLEANPLATE` is not whole-image generation and does not authorize redesign.
+
+## 3. Inputs
+
+Required conceptual inputs:
 
 ```text
-input/<mockup-id>/master.png
-input/<mockup-id>/manifest.json
-input/<mockup-id>/masks/<target-id>.png
+master.png
+source-removal-matte.png
+preserve-mask.png
+reconstruction-boundary-preview.png
+manifest / placement metadata
+generation-brief.md   # required for generative mode
 ```
 
-For the first case:
+Optional inputs:
 
-- mockup id: `directv-hero-01`
-- target id: `portrait`
-- master size: `1586 x 992`
-- portrait core bounds: `x=620, y=78, w=382, h=717`
-- approved reconstruction zone: `x=596, y=54, w=430, h=765`
-- approved reconstruction halo: `24 px`
+- donor/reference material;
+- accepted foreground alpha/assets;
+- foreground-effect ownership rules;
+- previous rejected candidates as negative evidence only.
 
-The pipeline MUST reject a master whose dimensions do not match the manifest.
+For DIRECTV:
 
-The production run also requires an accepted source-recovery decision authorizing reconstruction for the target layer. That authorization belongs to project/decomposition state; it must not be inferred from the existence of a manifest, mask, or candidate file.
+- master size: `1586 × 992`
+- immutable master SHA-256: `d5a66264cc44c449f0e29d045d729c81fe51564b768b371fd9544b34b60f22e6`
 
-## 3. Coordinate contract
+The pipeline must reject an input master whose dimensions/hash do not match current canonical state.
+
+## 4. Coordinate contract
 
 All coordinates are master-image coordinates.
 
-- origin: top-left of master
-- x increases right
-- y increases down
-- rectangles use integer pixel coordinates
-- bounds are represented as `x`, `y`, `width`, `height`
-- derived `right = x + width`
-- derived `bottom = y + height`
+- origin: top-left of master;
+- x increases right;
+- y increases down;
+- bounds are represented as `x`, `y`, `width`, `height`;
+- derived `right = x + width`;
+- derived `bottom = y + height`.
 
-No step may silently rescale the master, mask, or output.
+No step may silently rescale the master, masks, preserve geometry, or output.
 
-## 4. Mask contract
+## 5. Source-removal and preserve-mask contract
 
-The target mask is an 8-bit grayscale or RGBA PNG.
+### Source-removal matte
 
-- black / alpha 0 = immutable source region
-- white / alpha 255 = target removal region
-- intermediate values may be used for feathering
-- mask dimensions MUST equal the master dimensions unless the manifest explicitly declares a bounded mask with placement coordinates
+Identifies source pixels attributable to removable foreground content/effects that must not remain in the independent background.
 
-The approved reconstruction zone is the hard maximum edit boundary. A mask may be smaller than the zone but may never authorize pixels outside it.
+It may be larger than the recovered foreground core alpha when the original flattened source contains attributable antialiasing, halos, shadows, reflections, or source-specific edge treatment.
 
-A mask is not a substitute for source-recovery proof. It may be produced only after reconstruction for the layer has been authorized.
+It must remain tightly bounded and evidence-driven. Broad boxes/polygons that discard valid visible environment are prohibited.
 
-## 5. Reconstruction boundary
+### Preserve mask
 
-The reconstruction engine may alter pixels only where:
+Identifies pixels that must remain exact immutable-master source pixels.
+
+For pixels outside authorized reconstruction/source-removal support:
 
 ```text
-approved_zone == true
+final_background_pixel = master_pixel
 ```
 
-The implementation MAY use a feathered blend inside the approved zone.
+whenever practical.
 
-It MUST NOT alter source pixels outside the approved zone.
+The preserve mask and source-removal matte together define what the visual synthesis engine may and may not change.
 
-This is enforced after reconstruction by a byte-level unchanged-region guard.
+## 6. Reconstruction boundary
 
-### Unchanged-pixel acceptance rule
+The reconstruction engine may alter pixels only inside the explicitly authorized bounded region/matte support.
 
-After both source and output are normalized to the same color mode:
+It must not alter preserved source pixels outside that region.
+
+The deterministic integration layer must enforce this after reconstruction.
+
+### Unchanged-region acceptance rule
+
+After source and output are normalized to the same color mode:
 
 ```text
-changed_pixels_outside_approved_zone == 0
+changed_pixels_outside_authorized_reconstruction_support == 0
 ```
 
-Any non-zero result is an automatic failure.
+unless a narrowly documented integration feather is explicitly permitted by the current package.
 
-## 6. Reconstruction backend
+Any unexplained non-zero result is an automatic structural failure.
 
-The pipeline must expose reconstruction through an interchangeable backend interface rather than hard-coding one algorithm.
+## 7. Reconstruction backend interface
 
-Suggested interface:
+Reconstruction remains backend-pluggable.
+
+Conceptual interface:
 
 ```python
 class ReconstructionBackend(Protocol):
     def reconstruct(
         self,
         master: np.ndarray,
-        target_mask: np.ndarray,
+        source_removal_matte: np.ndarray,
+        preserve_mask: np.ndarray,
         approved_zone: Bounds,
         context: ReconstructionContext,
     ) -> np.ndarray:
         ...
 ```
 
-At least one backend is required for 3B.1.
+Supported backends include:
 
-Permitted implementation approaches include:
+- deterministic patch/texture continuation;
+- local inpainting model;
+- external image-generation/image-edit model operating on the bounded generation pack;
+- externally generated bounded candidate imported as an explicit input and then deterministically composited/validated.
 
-- OpenCV inpainting
-- deterministic texture synthesis / patch sampling
-- a locally available image inpainting model
-- an externally generated candidate imported as an explicit input, followed by deterministic compositing and QA
+The backend may not reinterpret the entire image. Only authorized hidden/reconstruction regions may be synthesized.
 
-The backend may not reinterpret the entire image. Only the bounded reconstruction zone may be synthesized.
+## 8. Generative cleanplate contract
 
-The existence of a more sophisticated backend does not authorize reconstruction; authorization comes from the source-recovery/decomposition gate.
+When mode = `GENERATE_BOUNDED_CLEANPLATE`, the generation pack must provide enough context for visual continuity without giving the model permission to redesign the scene.
 
-## 7. Preferred libraries
+The generation brief must specify:
 
-Baseline runtime:
+- environmental surfaces/materials that must continue;
+- perspective/architectural relationships;
+- lighting/tonal behavior;
+- foreground objects/text/UI that must be absent;
+- preserve constraints;
+- reconstruction bounds;
+- any known donor/reference cues;
+- uncertainty areas when applicable.
 
-- Python 3.12+
-- Pillow
-- NumPy
-- OpenCV (`opencv-python-headless`)
-- scikit-image for SSIM / structural metrics when useful
-- pytest
+For the DIRECTV proof, the clean background should preserve the same visual scene character:
 
-Avoid heavyweight dependencies unless they materially improve reconstruction quality, are isolated behind the backend interface, and reconstruction has already been proven necessary.
+- dark left editorial field;
+- concrete architectural wall/returns;
+- sky aperture;
+- magenta vertical light/neon;
+- reflective dark floor;
+- environmental shadows and tonal falloff.
 
-## 8. Required pipeline stages
+It must not contain Jim, TV, phone, readable UI/text, wall quote text, or footer phrase.
 
-### 0. Verify reconstruction authorization
+The model should return one primary candidate and at most one alternate when an alternate materially helps selection. Candidate proliferation is not part of the product workflow.
 
-Before validating raster inputs, verify that the target layer has completed source recovery and is explicitly classified `RECONSTRUCT_HIDDEN_PIXELS`.
+## 9. Foreground-associated effects
 
-Confirm the project state records:
+A visual effect attributable to a removable foreground object does not automatically belong in the independent background.
 
-- source recovery was attempted;
-- searched sources/systems are identified;
-- exact source recovery was insufficient for the required hidden pixels;
-- reconstruction is approved for this target;
-- neighboring foreground that must remain untouched is identified.
+Examples:
 
-If this authorization is absent or ambiguous, stop `BLOCKED` before generating or consuming a removal mask.
+- device contact shadow;
+- device reflection;
+- glow/halo;
+- soft object-specific edge treatment.
 
-### A. Validate inputs
+When necessary, reconstruct clean environmental pixels beneath the effect and emit the effect as `REBUILT_EFFECT` owned by the corresponding foreground asset so toggling the asset also toggles its effect.
+
+## 10. Required pipeline stages
+
+### A. Verify package authorization
+
+Read current `docs/PROJECT_CANON.md` and confirm the region/mode is authorized.
+
+### B. Validate inputs
 
 Validate:
 
-- master exists
-- master dimensions match manifest
-- target exists in manifest
-- mask exists
-- mask dimensions/placement are valid
-- approved zone is inside the canvas
-- core target bounds are contained by the approved zone
+- immutable master exists and matches canonical dimensions/hash;
+- source-removal matte exists and matches canvas/placement contract;
+- preserve mask exists and matches canvas/placement contract;
+- approved reconstruction support is inside the canvas;
+- accepted foreground geometry/provenance is available.
 
-### B. Build immutable-region map
+### C. Build generation/reconstruction pack
 
-Generate a boolean map representing every pixel outside the approved zone.
+Emit the deterministic inputs needed by the selected backend.
 
-### C. Reconstruct target region
+### D. Reconstruct target region
 
-Run the chosen backend only against the approved target.
+Run the selected backend only against the authorized bounded support.
 
-### D. Composite deterministically
+### E. Composite deterministically
 
-Composite the candidate into a copy of the master using the approved edit mask.
+Composite the accepted candidate into a copy of the master according to the preserve/source-removal contract.
 
-Never reconstruct directly into the sole source buffer.
+Never reconstruct directly into the sole immutable source buffer.
 
-### E. Automated QA
-
-Produce both metrics and visual artifacts.
+### F. Automated QA
 
 Required checks:
 
-1. output dimensions equal source dimensions
-2. output mode normalized consistently
-3. changed pixels outside approved zone = 0
-4. target removal coverage is non-zero
-5. no NaN/invalid pixel values
-6. output file is readable after serialization
-7. recomposition inputs have valid coordinates
+1. output dimensions equal source dimensions;
+2. output mode normalized consistently;
+3. changed pixels outside authorized reconstruction support = `0` unless explicitly justified feather applies;
+4. target removal/reconstruction coverage is non-zero;
+5. no NaN/invalid pixel values;
+6. output file is readable after serialization;
+7. placement/recomposition inputs have valid coordinates;
+8. immutable master hash remains unchanged;
+9. provenance classification is present.
 
-Recommended metrics:
+Recommended evidence:
 
-- changed pixel count inside zone
-- changed pixel count outside zone
-- mean absolute error outside zone; must be `0`
-- SSIM for unchanged region; expected `1.0` after exact guard
-- boundary-band discontinuity score
+- changed-pixel mask;
+- source-removal matte preview;
+- preserve-mask preview;
+- reconstruction-boundary preview;
+- background-alone preview;
+- recomposition preview;
+- boundary-band discontinuity metrics where useful.
 
-### F. Human visual QA
+### G. Human visual QA
 
 Automation cannot approve reconstruction plausibility.
 
-A human must inspect:
+A human/visual agent must inspect:
 
-- architecture continuity
-- wall seam continuity
-- texture scale
-- tonal falloff
-- lighting continuity
-- edge halos
-- repeated texture artifacts
-- obvious object remnants
-- accidental deletion of neighboring objects
+- architecture continuity;
+- perspective continuity;
+- wall seam continuity;
+- texture scale;
+- tonal falloff;
+- lighting continuity;
+- edge halos;
+- repeated texture artifacts;
+- obvious object/text remnants;
+- accidental deletion of neighboring objects;
+- full-frame recomposition against the immutable reference.
 
-Human QA is pass/fail and must be recorded in the QA report before Figma handoff.
+Human visual QA is pass/fail for `PROMOTION_READY`.
 
-## 9. Required outputs
+A failed visual candidate is `FAIL / CONTINUE`, not `BLOCKED`, unless a genuine external/source-of-truth problem prevents another bounded attempt.
 
-For target `portrait`:
+## 11. Required outputs
+
+A production cleanplate run should emit at minimum:
 
 ```text
-output/directv-hero-01/background/portrait-clean-plate.png
-output/directv-hero-01/background/portrait-clean-plate-preview.png
-output/directv-hero-01/qa/portrait-difference.png
-output/directv-hero-01/qa/portrait-unchanged-region-diff.png
-output/directv-hero-01/qa/portrait-report.json
+clean-background.png
+source-removal-matte.png
+preserve-mask.png
+reconstruction-boundary-preview.png
+background-preview.png
+recomposition-preview.png
+qa-report.json
 ```
 
-The preview should make the changed zone easy to inspect without altering the canonical clean-plate output.
+For generative mode, also retain a concise generation brief and generated-provenance record.
 
-## 10. QA report contract
+Temporary candidate/diagnostic artifacts should live under a run-specific temporary directory. Only accepted/final evidence should be promoted to durable product paths.
 
-Minimum shape:
+## 12. Provenance contract
+
+Each output/region must use one of the canonical provenance classes:
+
+- `RECOVERED_SOURCE`
+- `EXTRACTED_FROM_MASTER`
+- `NATIVE_REBUILT`
+- `GENERATED_RECONSTRUCTION`
+- `REBUILT_EFFECT`
+
+Generated cleanplate pixels must be classified `GENERATED_RECONSTRUCTION`.
+
+Do not describe generated pixels as recovered/original source.
+
+Minimum QA/provenance report fields should include:
 
 ```json
 {
   "mockup_id": "directv-hero-01",
-  "target_id": "portrait",
-  "pipeline_version": "0.1.0",
+  "mode": "GENERATE_BOUNDED_CLEANPLATE",
   "source_sha256": "...",
   "output_sha256": "...",
   "canvas": {"width": 1586, "height": 992},
-  "core_bounds": {"x": 620, "y": 78, "width": 382, "height": 717},
-  "approved_zone": {"x": 596, "y": 54, "width": 430, "height": 765},
-  "changed_pixels_inside_zone": 0,
-  "changed_pixels_outside_zone": 0,
+  "changed_pixels_outside_authorized_support": 0,
+  "provenance": "GENERATED_RECONSTRUCTION",
   "automated_gate": "PASS",
   "human_gate": "PENDING",
   "notes": []
 }
 ```
 
-## 11. Figma handoff contract
+## 13. Figma handoff contract
 
-Figma is a destination, not the reconstruction engine.
+Figma is a destination/composition environment, not the hidden-pixel synthesis engine.
 
-No clean-plate asset is uploaded to Figma unless:
+No cleanplate asset is promoted into the production composition unless:
 
-- source-recovery/decomposition gate authorized reconstruction;
-- automated gate = `PASS`;
-- human gate = `PASS`.
+- reconstruction is authorized by current project canon;
+- automated structural gate passes;
+- visual gate passes for the background candidate or the current package explicitly requires in-Figma recomposition for the final visual gate.
 
-Each approved output must include placement metadata:
+Each approved output must include placement metadata.
+
+For a full-canvas DIRECTV background:
 
 ```json
 {
-  "name": "Portrait Clean Plate — 3B",
-  "file": "background/portrait-clean-plate.png",
-  "x": 596,
-  "y": 54,
-  "width": 430,
-  "height": 765,
-  "destination_group": "01_BACKGROUND"
+  "name": "Background / Independent Cleanplate",
+  "x": 0,
+  "y": 0,
+  "width": 1586,
+  "height": 992,
+  "destination_role": "background/environment"
 }
 ```
 
-If the exported asset is a full-canvas image, placement must instead be `x=0`, `y=0`, `width=1586`, `height=992`.
+Final Figma QA must verify that foreground layers remain independently toggleable/editable and that the independent background does not contain material foreground residue.
 
-Do not infer placement from Figma after generation; placement comes from the manifest.
+## 14. Failure behavior
 
-## 12. Failure behavior
+The pipeline fails closed for structural/integrity violations such as:
 
-The pipeline must fail closed.
+- reconstruction not authorized by current canon;
+- source dimensions/hash mismatch;
+- mask/preserve geometry mismatch;
+- invalid reconstruction bounds;
+- output dimensions mismatch;
+- unexplained pixels changed outside authorized support;
+- serialization failure;
+- missing provenance;
+- Figma write/integration failure that cannot be safely retried.
 
-It must not generate or promote an approved artifact or trigger Figma handoff when:
+A candidate that simply looks visually wrong is a **QA failure requiring bounded correction**, not a genuine blocker.
 
-- source recovery / decomposition classification is incomplete or does not authorize reconstruction
-- source dimensions mismatch
-- mask dimensions mismatch
-- target is missing
-- approved zone is invalid
-- output dimensions mismatch
-- pixels changed outside approved zone
-- serialization fails
-- automated QA fails
+A failed run must preserve diagnostics without overwriting the last accepted artifact.
 
-A failed run should preserve diagnostics under a run-specific temporary/output directory rather than overwriting the last approved artifact.
+## 15. Rollback behavior
 
-## 13. Rollback behavior
+Accepted assets are immutable by version/hash.
 
-Approved artifacts are immutable by version.
+New attempts use new run IDs or temporary paths. Promotion to canonical product paths/Figma occurs only after the relevant acceptance gates.
 
-New attempts use new run IDs. Promotion to the canonical output path happens only after QA.
+Preserve known-good Figma state until a replacement is verified.
 
-Recommended structure:
+## 16. Acceptance criteria
 
-```text
-runs/<run-id>/...
-approved/<mockup-id>/<target-id>/...
-```
+A cleanplate/background stage is accepted only when all are true:
 
-## 14. 3B acceptance criteria
+- [ ] reconstruction route is authorized;
+- [ ] immutable master integrity is verified;
+- [ ] required foreground content is absent from the independent background;
+- [ ] no neighboring approved foreground object is unintentionally deleted;
+- [ ] visible-source environment is preserved where available;
+- [ ] hidden environment is visually continuous and plausible;
+- [ ] no obvious rectangular/polygon patch boundary remains;
+- [ ] output remains exactly the expected canvas size;
+- [ ] zero unexplained changed pixels exist outside authorized reconstruction support;
+- [ ] provenance is recorded truthfully;
+- [ ] automated structural gate passes;
+- [ ] human visual gate passes;
+- [ ] full-frame recomposition is presentation-ready.
 
-3B is complete only when all are true:
+## 17. Reuse requirements for mock-ups #2–#6
 
-- [ ] source-recovery/decomposition gate explicitly authorizes portrait hidden-pixel reconstruction
-- [ ] portrait is absent from the clean-plate candidate
-- [ ] no neighboring approved foreground object is unintentionally deleted
-- [ ] concrete architecture is visually plausible
-- [ ] tonal falloff is continuous
-- [ ] no obvious silhouette remnant remains
-- [ ] no visible rectangular patch boundary
-- [ ] output remains exactly `1586 x 992`
-- [ ] zero changed pixels exist outside the approved zone
-- [ ] QA artifacts are generated
-- [ ] automated gate passes
-- [ ] human visual gate passes
-- [ ] only then is the asset eligible for Figma placement
+No DIRECTV-specific coordinates or filenames may be hard-coded into reusable modules.
 
-## 15. Reuse requirements for mock-ups #2–#6
+All mock-up-specific values must come from manifests/current package inputs.
 
-No DIRECTV-specific coordinates or filenames may be hard-coded in reusable modules.
-
-All mock-up-specific values must come from the manifest.
-
-Each future mock-up must run the source-recovery/decomposition gate before deciding which clean-plate stages are actually necessary. Recovered source assets may eliminate some reconstruction stages entirely.
-
-When reconstruction is authorized, the reusable engine must support multiple targets per mock-up and cumulative clean-plate sequencing, because later targets may overlap pixels reconstructed by earlier targets.
-
-For the DIRECTV reconstruction sequence, if those stages remain necessary after source recovery:
+Each future mock-up runs the same routing model:
 
 ```text
-master
-  -> portrait removed
-  -> TV removed from portrait-clean result
-  -> phone removed from portrait+TV-clean result
-  -> wall slogan removed
-  -> wall underline removed
+RECOVER_SOURCE
+EXTRACT_FROM_MASTER
+REBUILD_NATIVE
+GENERATE_BOUNDED_CLEANPLATE
+RECOVER_OR_REBUILD_EFFECT
+DETERMINISTIC_COMPOSE
+STRUCTURAL_AND_VISUAL_QA
 ```
 
-Each reconstruction stage consumes the approved output of the prior reconstruction stage.
-
-## 16. Scope exclusions for 3B.1
-
-Do not implement yet:
-
-- native Figma typography
-- Figma buttons/components
-- TV screen extraction
-- phone screen extraction
-- generalized Figma MCP mutation
-- web UI
-- cloud hosting
-- job queues
-- persistence/database layers
-
-3B.1 should remain a small local CLI/library with tests.
+Recovered source assets may eliminate reconstruction entirely. Hidden visual pixels with no source may use bounded generative cleanplate. The product should not force deterministic inpainting when it cannot satisfy visual fidelity.
