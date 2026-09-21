@@ -129,6 +129,23 @@ Do not respond to a transfer problem by creating a new reconstruction method.
 Do not respond to a generation problem by creating a new datastore.
 Do not respond to a Figma problem by redesigning the product architecture.
 
+## Figma connector continuity rule
+
+For this project, successful Figma connector use earlier in the active chat/session is positive evidence that the connector is available. A missing, deferred, or temporarily undisplayed Figma namespace in the immediate tool surface is **not** evidence that Figma is unavailable.
+
+When Jim requests a Figma read or mutation:
+
+1. If Figma has already been used successfully in the active chat/session, assume it remains available unless a **current direct connector attempt** proves otherwise.
+2. If Figma functions are not immediately surfaced, rediscover/reload them through the available connector/tool registry (for example, `api_tool.list_resources(paths=["Figma"], ...)`) and load the required Figma skill before invoking the action.
+3. Attempt the requested Figma operation before claiming the connector is unavailable.
+4. Do **not** tell Jim to switch chats, use another agent, paste a prompt elsewhere, or perform the mutation manually merely because the Figma namespace is not immediately visible.
+5. Do **not** substitute a prompt for direct execution when Jim explicitly asked for a Figma mutation and the connector can be rediscovered.
+6. The agent is **not allowed to say the Figma connector cannot be used in the active chat/session** unless connector rediscovery has been attempted and a current direct Figma call returns an actual technical or permission error.
+7. If a current direct attempt does fail, report the exact error from that attempt. Do not infer unavailability from model state, context length, a refreshed tool list, or a previous missing namespace.
+8. Connector rediscovery is normal execution hygiene. It is not new architecture, a new workflow, or a reason to stop the product task.
+
+This rule exists because the tool surface can be deferred or require rediscovery while the underlying Figma connection remains usable. Prior successful Figma calls in the same active session must not be contradicted by an unsupported capability claim.
+
 ## Jim is never middleware
 
 Jim must never be required to:
