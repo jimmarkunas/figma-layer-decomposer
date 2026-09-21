@@ -7,20 +7,28 @@ Repository: `jimmarkunas/figma-layer-decomposer`
 Before mutation:
 
 1. Read `docs/PROJECT_CANON.md`.
-2. If BRIDGE-1 or user-entry-point backend work is in scope, read `docs/BRIDGE_CONTRACT.md`.
-3. If DIRECTV reconstruction work is in scope, read `docs/EXECUTION_CONTRACT.md`.
-4. Read other generic contracts only when the active canon/package explicitly invokes them.
-5. Confirm this repository is the active Git root, then confirm branch and working-tree status.
-6. Overlapping unexplained local changes block mutation; known unrelated changes must be preserved.
+2. Read `docs/DECOMPOSITION_FIRST_VISUAL_ARCHITECTURE_CONTRACT.md` when visual decomposition/reconstruction/template work is in scope.
+3. If BRIDGE-1 or user-entry-point backend work is in scope, read `docs/BRIDGE_CONTRACT.md`.
+4. If DIRECTV reconstruction work is in scope, read `docs/EXECUTION_CONTRACT.md`.
+5. Read other generic contracts only when the active canon/package explicitly invokes them.
+6. For any visual decomposition/reconstruction/template work, resolve and record:
+   - `SOURCE STATE:` `DECOMPOSITION_FIRST` or `FLATTENED_REFERENCE`
+   - `AUTHORITATIVE SOURCE:` exact asset/frame/path
+   - `CLEAN PLATE EXISTS:` `YES` or `NO`
+7. If those three fields cannot be answered cleanly, stop before visual mutation.
+8. Never infer `DECOMPOSITION_FIRST` from chronological language such as `new`, `new design`, `current rebrand`, or `recent concept`; classification is based on source state.
+9. Confirm this repository is the active Git root, then confirm branch and working-tree status.
+10. Overlapping unexplained local changes block mutation; known unrelated changes must be preserved.
 
 ## Authority
 
 1. Jim's explicit current instruction.
 2. Immutable visual reference for fidelity decisions.
 3. `docs/PROJECT_CANON.md`.
-4. Active package contract: `docs/BRIDGE_CONTRACT.md` or `docs/EXECUTION_CONTRACT.md`.
-5. Machine-readable schemas/manifests.
-6. Historical issues, old handoffs, rejected artifacts, prior chats.
+4. `docs/DECOMPOSITION_FIRST_VISUAL_ARCHITECTURE_CONTRACT.md` when visual decomposition/reconstruction/template work is in scope.
+5. Active package contract: `docs/BRIDGE_CONTRACT.md` or `docs/EXECUTION_CONTRACT.md`.
+6. Machine-readable schemas/manifests.
+7. Historical issues, old handoffs, rejected artifacts, prior chats.
 
 Notion is a pointer/index for this project. GitHub canon is authoritative.
 
@@ -65,6 +73,19 @@ Prefer, in order:
 5. compare with the immutable reference.
 
 Do not default to forensic hidden-pixel recovery. Masks may exist transiently inside tools, but they are not product artifacts, roadmap items, persistent Figma structures, or user-reviewed/cross-agent coordination objects.
+
+A supplied or approved final image is the immutable visual reference. It is not itself Layer 01 and does not prove that a clean background exists.
+
+## Pre-mutation drift gate
+
+Before every consequential visual mutation, resolve all four fields:
+
+- `SOURCE STATE:` `DECOMPOSITION_FIRST` / `FLATTENED_REFERENCE`
+- `PRODUCT LAYER:` 01 / 02 / 03 / 04 / 05
+- `TARGET ACCEPTANCE TEST:` exact test from the active execution contract/package
+- `METHOD:` one sentence
+
+If any answer is unclear, do not mutate.
 
 ## Two-failure circuit breaker
 
