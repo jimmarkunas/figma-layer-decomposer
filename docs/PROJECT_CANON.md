@@ -2,374 +2,249 @@
 
 ## Purpose
 
-This file is the canonical continuity handoff for the Figma Layer Decomposer project. It exists so ChatGPT, Codex, local development sessions, and future conversations can recover the current accepted state without relying on one chat transcript.
+Canonical continuity handoff for the Figma Layer Decomposer project.
+
+The product turns approved flat visual concepts into faithful, genuinely editable layered Figma compositions and stops at a bounded `PROMOTION_READY` handoff.
 
 ## Authority order
 
-When sources conflict, use this order:
+When sources conflict:
 
-1. **Jim's explicit current instruction** in the active working session.
-2. **Immutable master PNG** — visual acceptance authority for reconstruction fidelity.
-3. **This file** — current accepted product state, active delivery package, Figma target, and current reconstruction authorization.
-4. `docs/CLEAN_PLATE_CONTRACT.md` — generic implementation contract when hidden-background reconstruction is actually in scope.
-5. `schema/layer-manifest.schema.json` — machine-readable placement/QA contract.
-6. A GitHub issue only when this file explicitly names that issue as the active delivery package.
-7. Notion index / ChatGPT Project uploads — pointers only.
+1. Jim's explicit current instruction in the active session.
+2. Immutable master PNG for visual acceptance.
+3. This file for current accepted product state and architecture.
+4. `docs/EXECUTION_CONTRACT.md` for the active package's inputs, tool policy, candidate limit, QA and promotion state.
+5. Generic implementation contracts only when the active execution contract explicitly puts them in scope.
+6. Machine-readable schemas/manifests.
+7. Historical issues, old handoffs, rejected artifacts and prior chat plans.
 
-Do not infer approval from the mere existence of an artifact.
+Do not infer approval from the existence of an artifact.
 
 ## Mission
 
-Turn approved flat mock-up PNGs into genuinely editable layered Figma compositions while preserving **exact visible-source fidelity where recoverable** and **bounded visual continuity where hidden pixels are unrecoverable**, then emit a bounded `PROMOTION_READY` handoff to Personal Career Brand / PBDS.
+Reconstruct flat concept images as normal Photoshop/Figma-style layered designs.
 
-The project owns source recovery, decomposition, faithful raster/native reconstruction, bounded generative cleanplate reconstruction when required, fidelity QA, and the staging Figma composition. It does **not** own the canonical Personal Brand design system, semantic template contract, React rendering, or PowerPoint rendering.
+The canonical decomposition model is:
 
-Cross-system flow:
+1. **Layer 01 — Full Clean Background**
+2. **Layer 02 — Editorial / Environmental Effects**
+3. **Layer 03 — Portrait / Subject**
+4. **Layer 04 — Devices / Graphic Overlays**
+5. **Layer 05 — Editable UI / Typography**
 
-`APPROVED CONCEPT PNG → SOURCE RECOVERY / DECOMPOSITION → EDITABLE FIGMA + BOUNDED RECONSTRUCTION → PROMOTION_READY → PBDS CANONICAL FIGMA PROMOTION → SEMANTIC CONTRACT → REACT / POWERPOINT`
+The product goal is **faithful + editable + reusable layered composition**.
 
-## Two-part product boundary
+It is not forensic recovery of every unknowable hidden pixel from the flattened source.
 
-This project is Part 1 of a two-part concept-to-production product.
+## Core architecture
 
-### Part 1 — Figma Layer Decomposer
+Use the simplest truthful layer strategy:
 
-Owns:
+- recover authoritative source assets when they exist;
+- rebuild semantic text/UI/vector content natively;
+- generate/rebuild complete independent visual layers when source pixels do not exist;
+- compose layers deterministically;
+- compare the result against the immutable reference.
 
-- approved concept ingestion;
-- source recovery and provenance;
-- foreground/background inventory and classification;
-- raster extraction/rebuild;
-- bounded hidden-background reconstruction when genuinely required;
-- native Figma rebuild of editable text/UI/vector content;
-- deterministic placement/manifests;
-- fidelity QA;
-- staging Figma composition;
-- `PROMOTION_READY` handoff.
+If a complete independent layer can solve the requirement, prefer that over reconstructing local holes in the flattened master.
 
-### Part 2 — Personal Brand Design System / PBDS-4
+Masks may exist transiently inside a tool, but they are not product artifacts, roadmap items, approval objects, persistent Figma structures, or cross-agent coordination objects.
 
-Owns after `PROMOTION_READY`:
+## Current proof object
 
-- canonical `JM-Personal-Brand` Figma promotion;
-- reusable template/component definition;
-- semantic content/template contract;
-- non-source content-substitution proof;
-- React presentation consumption;
-- editable PowerPoint consumption;
-- later cross-surface/template-family generalization.
+DIRECTV hero, canvas `1586 × 992`.
 
-Do not collapse the two ownership boundaries. DIRECTV is the first proof object for Part 1 and the bridge specimen into Part 2; it is not the only slide/product.
+Repository:
 
-## Reconstruction routing model
+- `jimmarkunas/figma-layer-decomposer`
 
-The Decomposer is a routing pipeline, not a single universal reconstruction algorithm.
+Default branch:
 
-Each visual asset or region must be routed to the smallest truthful execution mode:
+- `main`
 
-- `RECOVER_SOURCE` — an original source exists and is authoritative.
-- `EXTRACT_FROM_MASTER` — clean visible pixels can be deterministically extracted from the immutable master.
-- `REBUILD_NATIVE` — editable text/UI/vector content can be faithfully reconstructed as native Figma content.
-- `GENERATE_BOUNDED_CLEANPLATE` — hidden visual/background content has no recoverable source and must be visually reconstructed inside a tightly bounded region using an image-generation model.
-- `RECOVER_OR_REBUILD_EFFECT` — foreground-associated effects such as shadows, reflections, or halos are recovered/rebuilt as effect layers owned by the corresponding foreground asset rather than left permanently baked into the independent background.
-- `DETERMINISTIC_COMPOSE` — Codex/local tooling assembles accepted assets/layers and performs deterministic placement/integration.
-- `STRUCTURAL_AND_VISUAL_QA` — automated bounds/integrity checks plus human full-frame visual acceptance.
+Current state:
 
-Routing rule:
+- **DIRECTV E2E LAYERED RECONSTRUCTION ACTIVE**
 
-**Recover exact source when it exists; rebuild editable/native content when it is semantically reconstructable; use bounded generative cleanplate only for unrecoverable hidden visual content; then deterministically compose and verify.**
+Current exit:
 
-Generated reconstruction is a first-class supported output, but it must be recorded as generated provenance rather than misrepresented as recovered source.
+- `PROMOTION_READY`
 
-## Hard anti-spin rule
+Current execution contract:
 
-The product architecture is now locked to the hybrid routing model above for the current DIRECTV proof. Do not reopen mask-model bake-offs, deterministic-only cleanplate experiments, orchestration-platform work, issue-per-step programs, or governance rewrites before the current DIRECTV delivery package completes.
-
-The current bounded operation is the **complete DIRECTV reconstruction delivery package**, not one mask, one patch, one generation candidate, or one intermediate QA result.
-
-Internal deterministic and generative iterations may occur inside the package. Stop only at the package acceptance gate or a genuine unresolved blocker.
-
-## Repository and current state
-
-- Repository: `https://github.com/jimmarkunas/figma-layer-decomposer`
-- Default branch: `main`
-- Local repository: `/Users/jimmarkunas/Development/Jim/figma-layer-decomposer`
-- Current reference: DIRECTV hero, `1586 × 992`
-- Current product state: **DIRECTV E2E RECONSTRUCTION ACTIVE — HYBRID GENERATIVE CLEANPLATE**
-- Current package exit: **`PROMOTION_READY` candidate**
-- Issue #11 / PR-1B is superseded by the accepted current state and is not the active execution contract.
-
-Known local working-tree facts from the current session:
-
-- `decomposer/directv_pr2_qa.py` contains an unrelated local modification and must remain untouched unless Jim explicitly expands scope.
-- local `input/` source material may be untracked; its presence is not by itself a blocker and it must not be committed wholesale without explicit scope.
+- `docs/EXECUTION_CONTRACT.md`
 
 ## Immutable visual target
 
-- `input/directv-hero-01/master.png`
-- canvas `1586 × 992`
-- SHA-256 `d5a66264cc44c449f0e29d045d729c81fe51564b768b371fd9544b34b60f22e6`
+- path: `input/directv-hero-01/master.png`
+- dimensions: `1586 × 992`
+- SHA-256: `d5a66264cc44c449f0e29d045d729c81fe51564b768b371fd9544b34b60f22e6`
 
-The immutable master remains the visual acceptance authority and must never be mutated.
-
-## Portrait state
-
-Pinned related identity/source reference remains:
-
-- repository `jimmarkunas/portfolio`
-- pinned commit `5af5f3191cdbd26cef48d3290fa1e979b04f0a73`
-- `public/jim/hero-jim-01-cutout-v2.png`
-- SHA-256 `06294961581f4fd3a0b08dae8af3eacf7c05e2efb3d61fe72fb517abe2995100`
-
-PR-1 proved deterministic affine alignment of that website portrait is insufficient. Do not continue affine tuning.
-
-Jim has accepted **LOCK #5** as the portrait basis:
-
-- local path: `runs/directv-pr1b-candidate5/portrait-candidate.png`
-- dimensions: `1048 × 1501`, RGBA
-- SHA-256: `50a24aa6ccffd5ea99e1d7c4247786830666530a09a051f2eb0163ce3fab8326`
-- active Figma node: `278:2`
-- placement: `x=580.82, y=59.88, w=513.26, h=734.88`
-
-The older Figma node `191:5 — Portrait / Jim — TRUE CUTOUT (toggleable)` is **REJECTED AS A SOURCE ASSET** and must remain hidden/superseded. It revealed TV/environment/sky/floor pixels and is not portrait truth.
-
-## Accepted broader decomposition boundary
-
-Source-first recovery remains mandatory. Accepted implementation directions are:
-
-- visible background pixels remain immutable-master pixels wherever possible;
-- hidden background pixels may be reconstructed only where foreground removal exposes genuinely hidden content;
-- when hidden visual content has no recoverable source, the approved path is `GENERATE_BOUNDED_CLEANPLATE`;
-- generated reconstruction must remain bounded to verified source-removal geometry or another explicitly documented repair region;
-- portrait, TV, and phone must exist as independent foreground assets/layers;
-- header/navigation, hero copy/CTA, metrics, wall message/divider, process strip, and bottom signature are native editable Figma content;
-- foreground extraction/rebuild and hidden-background reconstruction are separate operations;
-- foreground-associated effects may be owned by the foreground asset rather than baked into the independent background;
-- rejected GrabCut/semantic/mask-first portrait paths remain rejected;
-- the existing deterministic clean-plate engine remains valid support/fallback infrastructure, but deterministic reconstruction is not the only approved path.
-
-## Current reconstruction authorization
-
-Jim explicitly authorizes the current DIRECTV end-to-end delivery package to reconstruct genuinely hidden **environment/background** pixels required to produce an independent background and faithful final recomposition.
-
-This authorization explicitly includes **bounded generative cleanplate reconstruction** for hidden visual pixels that have no recoverable source or that deterministic continuation cannot reconstruct with sufficient visual fidelity.
-
-This authorization is bounded by all of the following:
-
-- source recovery/provenance work already completed for DIRECTV does not need to be re-run merely to satisfy historical stage sequencing;
-- reconstruction applies only to environmental pixels genuinely hidden by foreground content or contaminated temporary repairs;
-- exact visible master pixels must be preserved wherever they are available and suitable;
-- deterministic source-removal geometry, preserve masks, and reconstruction bounds remain required;
-- `GENERATE_BOUNDED_CLEANPLATE` is approved when deterministic recovery cannot reproduce hidden visual regions with sufficient fidelity;
-- generated pixels must be explicitly tracked as `GENERATED_RECONSTRUCTION` provenance rather than implied to be recovered source;
-- no rejected portrait masks become geometry authority;
-- no whole-image reinterpretation or redesign;
-- automated guards and human full-frame visual QA remain required before `PROMOTION_READY`;
-- deterministic or integration defects found during the package must be corrected inside the same package instead of returned as a new micro-stage.
-
-Absence of a pre-existing derived mask, intermediate patch, duplicate repo-side visual spec, or original hidden-background source is **not** a blocker when the current package can derive the needed bounds and use bounded generative reconstruction.
+Never mutate the immutable master.
 
 ## Active Figma workspace
 
 File:
 
-- `https://www.figma.com/design/3ZYkEtZVyRH9B2DfVpersf/JM-Personal-Brand-V2?node-id=155-63`
+- `JM-Personal-Brand-V2`
 - file key `3ZYkEtZVyRH9B2DfVpersf`
 
-Current active reconstruction workspace:
+Active workspace:
 
 - page `155:63 — 999 - Test 2`
-- workspace section `160:2 — DIRECTV / Reconstruction Workspace`
 - immutable reference `160:3 — DIRECTV / REFERENCE — LOCKED`
-- editable production target `160:4 — DIRECTV / PRODUCTION — EDITABLE`
+- production target `160:4 — DIRECTV / PRODUCTION — EDITABLE`
 
-The older page/frame pair:
+The older `240:4 / 240:5` workspace is historical staging.
 
-- `240:4 — 00_Master_Reference`
-- `240:5 — Editable Master Reference 01 — Layered`
+## Accepted foreground layers
 
-is **historical staging and not the active DIRECTV target**. Do not use its empty groups to infer that current native reconstruction is missing.
+### Layer 03 — Portrait / Jim
 
-### Current verified Figma facts
+Accepted basis:
 
-`160:4` already contains native/editable foreground for the major text/UI system, including the `162:*` header/hero/CTA/proof/system nodes plus editable wall quote `195:5` and divider `195:6`.
+- asset `runs/directv-pr1b-candidate5/portrait-candidate.png`
+- dimensions `1048 × 1501`, RGBA
+- SHA-256 `50a24aa6ccffd5ea99e1d7c4247786830666530a09a051f2eb0163ce3fab8326`
+- active Figma node `278:2`
 
-Preserve that native reconstruction unless full-frame comparison shows a specific material defect.
+The older `191:5` portrait is rejected as source truth and remains superseded.
 
-Accepted current foreground state includes:
+### Layer 04 — Devices / Graphic Overlays
 
-- independent portrait `278:2` using LOCK #5;
-- TV `161:14`;
-- phone `236:18`;
-- existing native/editable text/UI/vector content.
+Accepted current device layers:
 
-Current background state:
+- TV `161:14`
+- phone `236:18`
 
-- deterministic background candidates V1/V2/V3 are **REJECTED** for visual cleanliness/fidelity;
-- V3 proved the deterministic mask/boundary gates alone are insufficient to reconstruct hidden architecture cleanly;
-- the original master background `160:6` is currently the visible fallback in Figma while a bounded generative cleanplate is produced;
-- rejected/temporary background repair layers should remain hidden unless explicitly needed for comparison.
+Preserve them as independent foreground layers unless a specific material defect is proven.
 
-The product task is therefore now: **bounded generative background reconstruction + deterministic integration/recomposition/QA**, not another deterministic-mask research loop or native-UI rebuild program.
+### Layer 05 — Editable UI / Typography
 
-## Current DIRECTV delivery package
+`160:4` already contains native/editable major UI/text content, including:
 
-Execute as one bounded package:
+- header/navigation;
+- hero headline/subcopy;
+- CTA;
+- KPIs/proof metrics;
+- process strip;
+- wall quote/divider;
+- footer phrase.
 
-1. Inspect `160:3`, `160:4`, and current local accepted assets.
-2. Preserve/hash-verify accepted LOCK #5 portrait state.
-3. Preserve/verify TV and phone as independent foreground assets; correct deterministic crop/alpha/z-order leakage if found.
-4. Derive source-removal geometry, preserve masks, and foreground occupancy from verified foreground assets/native Figma layers as needed.
-5. Preserve exact visible-source pixels outside the bounded reconstruction region.
-6. Build a bounded cleanplate generation pack containing the immutable master, source-removal matte, preserve mask, reconstruction-boundary preview, and concise generation brief.
-7. Run `GENERATE_BOUNDED_CLEANPLATE` for unrecoverable hidden environmental/background pixels.
-8. Validate the generated candidate structurally and visually before Figma installation.
-9. Install the accepted cleanplate as the independent background while preserving accepted foreground/native layers.
-10. Remove or supersede temporary/contaminated repair layers that visibly break the composition.
-11. Recompose the entire slide.
-12. Render and compare `160:4` against immutable reference `160:3`.
-13. Correct deterministic or generative integration defects inside the same package.
-14. Verify layer independence/editability, provenance classification, and immutable-master integrity.
-15. Exit as `PROMOTION_READY` candidate only after required automated evidence and human full-frame visual QA pass.
+Preserve/reuse this native content. Do not rasterize or duplicate it.
 
-No Jim manual download/upload/rename/move step should be introduced for intermediate assets when available integrations/local tooling can perform the transfer directly.
+## Current Layer 01 requirement
 
-## Parallel execution model — current emergency path
+Create one complete full-width architectural background for the entire `1586 × 992` frame.
 
-The approved current execution model uses two parallel tracks after the generation pack is available:
+The background must contain the complete environment beneath foreground layers:
 
-### Track A — Agent 1 / image model
+- concrete architecture;
+- opening/sky relationship;
+- floor/perspective;
+- coherent material/lighting;
+- right-side architectural/neon relationship where intrinsic to the space.
 
-Owns:
+It must not contain Jim, TV, phone, UI, typography, wall quote, process graphics, or the left editorial black field as a baked design overlay.
 
-- bounded generative cleanplate reconstruction;
-- preserving the visible scene character around the reconstruction region;
-- generating one primary candidate and, only when useful, one alternate;
-- reporting visual uncertainty regions.
+Hidden areas may be plausibly synthesized. Exact historical hidden pixels are not required.
 
-Track A does **not** own Figma placement, repo mutation, provenance bookkeeping, PBDS semantics, or final deterministic QA.
+## Current Layer 02 requirement
 
-### Track B — Codex
+Recreate the editorial/environmental treatment independently over Layer 01, preferably as editable Figma layers/effects:
 
-Owns:
+- left black editorial field/rectangle;
+- right-edge fade/gradient;
+- glow/lighting treatment required for reference fidelity;
+- independently controllable accent effects where practical.
 
-- generation-pack preparation;
-- deterministic masks/bounds/preserve geometry;
-- file/hash/provenance bookkeeping;
-- Figma cleanplate integration;
-- recomposition and deterministic QA;
-- PBDS semantic-slot/handoff preparation in parallel while Track A generates;
-- final package evidence.
+Turning Layer 02 off must reveal the complete Layer 01 architectural background.
 
-Codex must not attempt another deterministic-only cleanplate loop when the current route is `GENERATE_BOUNDED_CLEANPLATE`.
+## Superseded execution paths
 
-## Provenance classes
+The following are historical/rejected for the current package and must not be restarted unless Jim explicitly changes architecture:
 
-Every reconstructed output must classify provenance using one of these roles:
+- A1/A2/B1/B2 patch programs;
+- cyan edit-input workflows;
+- source-removal mask packages;
+- mask contact sheets and approval stages;
+- registered occupancy pipelines;
+- V1/V2/V3 deterministic cleanplate iteration;
+- whole-canvas forensic hidden-pixel recovery as the product goal;
+- user-mediated intermediate file transfer.
 
-- `RECOVERED_SOURCE`
-- `EXTRACTED_FROM_MASTER`
-- `NATIVE_REBUILT`
-- `GENERATED_RECONSTRUCTION`
-- `REBUILT_EFFECT`
+`docs/CLEAN_PLATE_CONTRACT.md` remains generic historical/supporting capability documentation. It is **not the active DIRECTV execution contract** unless a future approved package explicitly invokes it.
 
-Generated cleanplate regions must be recorded as `GENERATED_RECONSTRUCTION`, not implied to be original recovered pixels.
+## Current delivery package
 
-## Genuine blockers
+Execute as one package under `docs/EXECUTION_CONTRACT.md`:
 
-A `BLOCKED` result is valid when the package cannot safely continue because of an unresolved external or source-of-truth problem, for example:
+1. preserve/hash-verify immutable master and accepted layers;
+2. generate one complete Layer 01 background;
+3. background-alone QA;
+4. install accepted Layer 01 into production frame;
+5. construct Layer 02 editorial/environmental effects;
+6. preserve Layer 03 Jim;
+7. preserve Layer 04 TV/phone;
+8. preserve Layer 05 editable UI;
+9. eliminate duplicate/obsolete repair layers that materially interfere;
+10. compare `160:4` against locked reference `160:3`;
+11. correct deterministic composition defects inside the same package;
+12. verify independent layer toggles and final visual fidelity;
+13. exit `PROMOTION_READY` only when the execution contract's acceptance tests pass.
 
-- a required accepted source asset cannot be located or hash-verified;
-- required immutable source bytes are unavailable;
-- Figma write access to the active target is unavailable;
-- the image-generation path needed for `GENERATE_BOUNDED_CLEANPLATE` is unavailable after the generation pack is complete;
-- two explicit current requirements are mutually impossible;
-- overlapping unexplained local changes make the intended mutation unsafe.
+## Anti-drift rules
 
-These are not blockers by themselves:
+### Layer-first
 
-- an intermediate mask/patch does not already exist;
-- a derived occupancy/source-removal mask has not been separately approved;
-- an internal candidate needs correction;
-- deterministic cleanplate candidates failed visual QA;
-- original hidden-background source pixels do not exist;
-- existing native Figma nodes do not have duplicate repo-side specs;
-- known unrelated local changes can be safely preserved outside the mutation surface.
+Every task must directly advance one of Layers 01–05.
 
-## Figma layer outcome required for DIRECTV
+Before consequential mutation, resolve:
 
-The final editable composition must provide independent/toggleable roles equivalent to:
+- `PRODUCT LAYER`
+- `TARGET ACCEPTANCE TEST`
+- `METHOD`
 
-- background/environment;
-- portrait;
-- TV/device;
-- phone/device;
-- header/nav;
-- hero copy/CTA;
-- metrics/proof;
-- wall message;
-- process/system strip;
-- bottom signature/footer.
+If unclear: no mutation.
 
-Exact final node naming may follow the already-built `160:4` structure. Do not create a second permanent design system in the staging file.
+### Two-failure circuit breaker
 
-## Promotion boundary
+After two material failures of the same strategy, stop that strategy.
 
-The Decomposer stops at `PROMOTION_READY`:
+Do not create attempt 3, V4/V5, another mask package, another candidate family, or another coordination artifact.
 
-`RECONSTRUCTION_ACTIVE → PROMOTION_READY → PBDS PROMOTED → CONSUMABLE`
+Return to the layer output and choose the simplest sufficient method.
 
-`PROMOTION_READY` requires:
+### No workaround cascades
 
-- a genuinely editable DIRECTV composition;
-- independent raster/background roles required for reuse;
-- full-frame human visual acceptance against the immutable master;
-- required automated reconstruction/fidelity QA;
-- linked provenance and accepted asset evidence;
-- exact staging Figma/frame identification;
-- enough layer-role description for PBDS to evaluate reuse.
+A blocker does not authorize new architecture.
 
-PBDS owns canonical Figma promotion, reusable-template/component definition, semantic content contract, React consumption, editable PowerPoint consumption, and later template generalization.
+Report the exact missing capability and use the smallest allowed workaround.
 
-Do not generalize mock-ups #2–#6 until DIRECTV reaches `PROMOTION_READY` and PBDS proves one promoted concept can be reused through a non-source content variation, one semantic contract, one React slide, and one editable PowerPoint slide.
+### Jim is never middleware
 
-## Accepted completed work
+Jim must not be required to manually rename, move, reconcile, or transport intermediate binary artifacts between executors.
 
-- M2 structure verification — COMPLETE
-- 3A removal geometry — PASS
-- 3A.1 unapproved wall patch removal — PASS
-- 3B.0 clean-plate contract/repo bootstrap — COMPLETE
-- 3B.1 deterministic clean-plate engine — COMPLETE as fallback/support infrastructure
-- SR-1 source inventory — COMPLETE
-- SR-2 provenance review — COMPLETE
-- SR-3 decomposition classification — COMPLETE as planning evidence
-- SR-4 decomposition-plan review — PASS
-- ARC-1 architecture checkpoint — COMPLETE
-- EX-0 deterministic extraction engine — COMPLETE
-- mask-first portrait strategies — REJECTED/SUPERSEDED
-- PR-1 source-guided affine portrait proof — COMPLETE WITH AUTOMATED FAIL
-- PR-1B historical portrait-candidate phase — SUPERSEDED by accepted LOCK #5
-- LOCK #5 direct independent Figma portrait placement — COMPLETE
-- deterministic cleanplate V1/V2/V3 — REJECTED FOR VISUAL FIDELITY; retained only as evidence that deterministic boundary controls work but visual synthesis is required
-- hybrid reconstruction roadmap with `GENERATE_BOUNDED_CLEANPLATE` — APPROVED
+## Repository/worktree facts
 
-## Current next step
+Known unrelated local state may include:
 
-**Run the approved two-track DIRECTV package: Codex prepares the bounded generation pack and PBDS handoff in parallel while Agent 1/image model generates the cleanplate; then Codex integrates, recomposes, verifies, and proves the `PROMOTION_READY` candidate.**
+- modified `decomposer/directv_pr2_qa.py`;
+- untracked `input/` source material.
 
-Do not insert another roadmap, architecture, mask-approval, or deterministic-cleanplate micro-stage in front of that work.
+Preserve unrelated work. Its presence alone is not a blocker.
 
-## Continuity protocol
+## Product boundary
 
-At the start of a new implementation session:
+This repository owns reconstruction through `PROMOTION_READY`.
 
-1. Read this file from current branch/main.
-2. Read `AGENTS.md`.
-3. Read only the implementation contracts needed for the current package surface.
-4. Confirm repository root, branch, working-tree state, active Figma target, and immutable master hash.
-5. Classify existing local changes as overlapping vs. known unrelated; preserve unrelated changes without using them as a generic blocker.
-6. Route each layer/region using the reconstruction routing model.
-7. Execute the bounded DIRECTV delivery package through its acceptance gate.
-8. Stop at package completion or a genuine blocker.
+After `PROMOTION_READY`, Personal Career Brand / PBDS owns:
 
-Update this canon only when the accepted product state, active target, or product boundary actually changes.
+- canonical `JM-Personal-Brand` Figma promotion;
+- reusable template/component definition;
+- semantic content contract;
+- non-source content substitution proof;
+- React consumption;
+- editable PowerPoint consumption.
+
+See `docs/PROMOTION_HANDOFF_CONTRACT.md` before downstream promotion work.
