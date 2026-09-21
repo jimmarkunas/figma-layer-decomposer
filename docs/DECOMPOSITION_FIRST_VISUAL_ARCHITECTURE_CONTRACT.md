@@ -24,7 +24,29 @@ If a concept is intended to become a reusable website hero, case-study template,
 
 ---
 
-## 2. New Concept Architecture
+## 2. Source-State Classification Gate
+
+Classification is based on the state of the authoritative source, **not** when the design was created.
+
+Before choosing a workflow, classify the concept as exactly one of:
+
+### `DECOMPOSITION_FIRST`
+
+Use this classification only when a clean background and independent component assets already exist, or are being created independently **before** final composition.
+
+### `FLATTENED_REFERENCE`
+
+Use this classification whenever the authoritative starting point is an already-composed raster/reference image and no canonical independent layer package exists — regardless of whether the image was created five years ago or five minutes ago.
+
+`FLATTENED_REFERENCE` work follows the legacy reconstruction path, including the complete-background fallback when no recoverable clean plate exists.
+
+Never infer `DECOMPOSITION_FIRST` from words such as **new**, **new design**, **current rebrand**, **recent concept**, or similar chronological language.
+
+A supplied or approved final image is the immutable **visual reference**. It is not itself Layer 01 and it is not evidence that a clean background exists.
+
+---
+
+## 3. New Concept Architecture
 
 For future concepts, build the composition in this order.
 
@@ -119,11 +141,11 @@ Examples:
 - repairing a small missing region;
 - extending floor/wall/background continuation.
 
-**This bounded-fill rule applies to new decomposition-first concepts. For legacy flattened concepts, the Legacy Full-Background Exception in §7 overrides this default.**
+**This bounded-fill rule applies to new decomposition-first concepts. For legacy flattened concepts, the Legacy Full-Background Exception in §8 overrides this default.**
 
 ---
 
-## 3. Canonical Reusable Package
+## 4. Canonical Reusable Package
 
 A reusable hero or concept should resolve into:
 
@@ -158,7 +180,7 @@ A mask may exist transiently inside a tool, but the product is the finished cano
 
 ---
 
-## 4. Recommended Package Structure
+## 5. Recommended Package Structure
 
 ```text
 <concept-slug>/
@@ -211,7 +233,7 @@ image-293-80.png
 
 ---
 
-## 5. Composition Manifest Example
+## 6. Composition Manifest Example
 
 ```json
 {
@@ -270,7 +292,7 @@ The manifest documents raster composition. It does **not** replace Figma as the 
 
 ---
 
-## 6. Native Figma Layer Contract
+## 7. Native Figma Layer Contract
 
 Use semantic layer names where practical:
 
@@ -307,7 +329,7 @@ Examples:
 
 ---
 
-## 7. Legacy Flattened Concepts
+## 8. Legacy Flattened Concepts
 
 Legacy concepts are different because the flattened image may not contain:
 
@@ -339,7 +361,7 @@ The accepted legacy objective is:
 
 ---
 
-## 8. Deterministic Legacy Decision Tree
+## 9. Deterministic Legacy Decision Tree
 
 ```text
 Clean plate exists?
@@ -366,7 +388,7 @@ Do not default back to hidden-pixel forensics once the complete-background path 
 
 ---
 
-## 9. Legacy Reconstruction Workflow
+## 10. Legacy Reconstruction Workflow
 
 1. Freeze the immutable reference.
 2. Record dimensions, checksum/source, and acceptance state.
@@ -388,7 +410,7 @@ Once a layer strategy is accepted, do not reopen it merely because a later local
 
 ---
 
-## 10. Pixel Preservation
+## 11. Pixel Preservation
 
 Pixel preservation applies to **recoverable source assets and accepted canonical layers**, not blindly to every pixel in a flattened legacy background.
 
@@ -424,7 +446,7 @@ Once the rebuilt background is accepted, it becomes canonical and must not be ca
 
 ---
 
-## 11. QA and Acceptance
+## 12. QA and Acceptance
 
 A concept is template-ready only when all applicable criteria pass.
 
@@ -475,7 +497,7 @@ The primary question is:
 
 ---
 
-## 12. Shadows and Effects Ownership
+## 13. Shadows and Effects Ownership
 
 Classify effects deliberately.
 
@@ -495,7 +517,7 @@ Toggling a foreground object off must not leave an obviously incorrect artifact.
 
 ---
 
-## 13. Prohibited Anti-Patterns
+## 14. Prohibited Anti-Patterns
 
 Do not:
 
@@ -519,7 +541,7 @@ Do not:
 
 ---
 
-## 14. Decomposer Responsibility
+## 15. Decomposer Responsibility
 
 `figma-layer-decomposer` owns bounded reconstruction/recovery through `PROMOTION_READY`.
 
@@ -550,7 +572,7 @@ The decomposer exists to produce reusable canonical layers—not to become a sep
 
 ---
 
-## 15. PBDS / Design-System Responsibility
+## 16. PBDS / Design-System Responsibility
 
 Personal Career Brand / PBDS owns:
 
@@ -576,7 +598,7 @@ It must not redefine the brand language per image.
 
 ---
 
-## 16. Template Contract
+## 17. Template Contract
 
 A reusable template distinguishes:
 
@@ -623,7 +645,7 @@ These distinctions should be obvious in Figma.
 
 ---
 
-## 17. Source-of-Truth Hierarchy
+## 18. Source-of-Truth Hierarchy
 
 For reusable visual work:
 
@@ -639,7 +661,7 @@ Masks do not become a separate source of truth.
 
 ---
 
-## 18. Completion Definition
+## 19. Completion Definition
 
 A concept is not “templated” merely because it exists in Figma.
 
@@ -656,7 +678,7 @@ It is templated when:
 
 ---
 
-## 19. Operating Workflows
+## 20. Operating Workflows
 
 ### New reusable concept
 
@@ -696,7 +718,7 @@ freeze reference
 
 ---
 
-## 20. Final Rule
+## 21. Final Rule
 
 **Never again generate a reusable branded concept as one irreversible flattened scene.**
 
